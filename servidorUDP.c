@@ -18,7 +18,7 @@ int main ()
 	-----------------------------------------------------*/
 	int Socket_Servidor;
 	struct sockaddr_in Servidor;
-	int contador = 0
+	int contador = 0;
 	
 	
 
