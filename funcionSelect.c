@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<sys/time.h>
 #include<sys/socket.h>
-
+//Prueba
 int main(){
 
 	struct timeval timeout;
@@ -16,7 +16,6 @@ int main(){
 	//Inicializar los conjuntos fd_set
 	FD_ZERO(&lectura);
 	FD_SET(0,&lectura);
-	
 
 	salida = select(1,&lectura,NULL,NULL,&timeout);
 	
