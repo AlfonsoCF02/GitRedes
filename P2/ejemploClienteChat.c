@@ -69,14 +69,14 @@ int main ( )
 	-------------------------------------------------------------------*/
 	do
 	{
-        auxfds = readfds;
+        auxfds = readfds; // xk el select se lo carga
         salida = select(sd+1,&auxfds,NULL,NULL,NULL);
         
         //Tengo mensaje desde el servidor
         if(FD_ISSET(sd, &auxfds)){
             
             bzero(buffer,sizeof(buffer));
-            recv(sd,buffer,sizeof(buffer),0);
+            recv(sd,buffer,sizeof(buffer),0); //sizeof xk siempre mandadmos el tamaño max
             
             printf("\n%s\n",buffer);
             

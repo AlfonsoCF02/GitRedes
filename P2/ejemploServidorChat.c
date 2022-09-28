@@ -61,9 +61,10 @@ int main ( )
     	// sockets puedan reutilizar cualquier puerto al que nos enlacemos.
     	// Esto permite· en protocolos como el TCP, poder ejecutar un
     	// mismo programa varias veces seguidas y enlazarlo siempre al
-   	 // mismo puerto. De lo contrario habrÌa que esperar a que el puerto
-    	// quedase disponible (TIME_WAIT en el caso de TCP)
-    	on=1;
+        // mismo puerto. De lo contrario habrÌa que esperar a que el puerto
+    	// quedase disponible (TIME_WAIT en el caso de TCP).
+
+    	on = 1;
     	ret = setsockopt( sd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
 
 
@@ -72,6 +73,7 @@ int main ( )
 	sockname.sin_port = htons(2000);
 	sockname.sin_addr.s_addr =  INADDR_ANY;
 
+    // Ver si se asocia puerto e ip
 	if (bind (sd, (struct sockaddr *) &sockname, sizeof (sockname)) == -1)
 	{
 		perror("Error en la operación bind");
@@ -97,9 +99,8 @@ int main ( )
     	FD_ZERO(&auxfds);
     	FD_SET(sd,&readfds);
     	FD_SET(0,&readfds);
-    
    	
-    	//Capturamos la señal SIGINT (Ctrl+c)
+    //Capturamos la señal SIGINT (Ctrl+c)
     	signal(SIGINT,manejador);
     
 	/*-----------------------------------------------------------------------
@@ -107,21 +108,24 @@ int main ( )
 	------------------------------------------------------------------------ */
 		while(1){
             
-            //Esperamos recibir mensajes de los clientes (nuevas conexiones o mensajes de los clientes ya conectados)
+            //Esperamos recibir mensajes de los clientes 
+            // (nuevas conexiones o mensajes de los clientes ya conectados)
             
-            auxfds = readfds;
+            auxfds = readfds;  // xk el select se lo carga
             
             salida = select(FD_SETSIZE,&auxfds,NULL,NULL,NULL);
             
             if(salida > 0){
                 
                 
-                for(i=0; i<FD_SETSIZE; i++){
+                for(i=0; i<FD_SETSIZE; i++){ 
+                // Mas eficiente meter variable para ver que no sea mayor que el maximo que 
+                // tengo mas 1 (no comprobar que es mayor que el maximo --> ver si vale nota hacerlo xd)
                     
                     //Buscamos el socket por el que se ha establecido la comunicación
                     if(FD_ISSET(i, &auxfds)) {
                         
-                        if( i == sd){
+                        if( i == sd ){
                             
                             if((new_sd = accept(sd, (struct sockaddr *)&from, &from_len)) == -1){
                                 perror("Error aceptando peticiones");
@@ -129,7 +133,7 @@ int main ( )
                             else
                             {
                                 if(numClientes < MAX_CLIENTS){
-                                    arrayClientes[numClientes] = new_sd;
+                                    arrayClientes[numClientes] = new_sd; //A quien hay que mandar
                                     numClientes++;
                                     FD_SET(new_sd,&readfds);
                                 
@@ -141,11 +145,12 @@ int main ( )
                                     
                                         bzero(buffer,sizeof(buffer));
                                         sprintf(buffer, "Nuevo Cliente conectado: %d\n",new_sd);
+                                        //Se manda a cada cliente conectado (array)
                                         send(arrayClientes[j],buffer,sizeof(buffer),0);
                                     }
                                 }
                                 else
-                                {
+                                {   //Si hay muchos a la puta calle
                                     bzero(buffer,sizeof(buffer));
                                     strcpy(buffer,"Demasiados clientes conectados\n");
                                     send(new_sd,buffer,sizeof(buffer),0);
@@ -156,9 +161,12 @@ int main ( )
                             
                             
                         }
-                        else if (i == 0){
+                        else if (i == 0){ // Se ha escrito algo en la terminal del servidor
+                                //Por ahora solo se reconoce salir, pero puede haber más como saber quien hay
+                                // o cuanto llevan conectados
+        
                             //Se ha introducido información de teclado
-                            bzero(buffer, sizeof(buffer));
+                            bzero(buffer, sizeof(buffer)); //Limpiar el buffer??¿?¿?¿?¿
                             fgets(buffer, sizeof(buffer),stdin);
                             
                             //Controlar si se ha introducido "SALIR", cerrando todos los sockets y finalmente saliendo del servidor. (implementar)
@@ -179,14 +187,15 @@ int main ( )
                             //Mensajes que se quieran mandar a los clientes (implementar)
                             
                         } 
-                        else{
+                        else{ //Esto ya no es ningun caso especial como los otros
+                            //Recibir lo que manda cualquier cliente
                             bzero(buffer,sizeof(buffer));
                             
                             recibidos = recv(i,buffer,sizeof(buffer),0);
                             
                             if(recibidos > 0){
                                 
-                                if(strcmp(buffer,"SALIR\n") == 0){
+                                if(strcmp(buffer,"SALIR\n") == 0){  // Cliente qiuere salir
                                     
                                     salirCliente(i,&readfds,&numClientes,arrayClientes);
                                     
@@ -201,7 +210,7 @@ int main ( )
                                     printf("%s\n", buffer);
 
                                     for(j=0; j<numClientes; j++)
-                                        if(arrayClientes[j] != i)
+                                        if(arrayClientes[j] != i)//Al que manda el mensaje no se lee envia salir xd
                                             send(arrayClientes[j],buffer,sizeof(buffer),0);
 
                                     
@@ -210,7 +219,8 @@ int main ( )
                                 
                             }
                             //Si el cliente introdujo ctrl+c
-                            if(recibidos== 0)
+                            if(recibidos == 0) // Si el numero de bits recibidos es 0 es xk el ciente ha salido
+                                // de forma abructa
                             {
                                 printf("El socket %d, ha introducido ctrl+c\n", i);
                                 //Eliminar ese socket
@@ -260,4 +270,6 @@ void manejador (int signum){
     signal(SIGINT,manejador);
     
     //Implementar lo que se desee realizar cuando ocurra la excepción de ctrl+c en el servidor
+
+    //seria como salir cliente o algo así
 }
