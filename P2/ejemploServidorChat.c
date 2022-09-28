@@ -30,7 +30,7 @@ int main ( )
 	/*---------------------------------------------------- 
 		Descriptor del socket y buffer de datos                
 	-----------------------------------------------------*/
-	int sd, new_sd;
+	int sd, new_sd;//socket descriptor
 	struct sockaddr_in sockname, from;
 	char buffer[MSG_SIZE];
 	socklen_t from_len;

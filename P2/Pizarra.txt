@@ -1,0 +1,29 @@
+SERVIDOR
+
+Abrir el socket
+
+Asociar (IP, puerto) a su servicio
+
+Habilitar el socket para aceptar peticiones/conexiones
+
+Espera para aceptar nuevas conexiones (1)
+
+Pedir petición (2)
+
+Enviar respuesta (2)
+
+Cerrar socket
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+CLIENTE
+
+Abrir el socket
+
+Conectarse al servidor (1)
+
+Enviar peticiones (2)
+
+Recibir respuesta (2)
+
+Cerrar socket
