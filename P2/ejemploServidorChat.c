@@ -271,5 +271,5 @@ void manejador (int signum){
     
     //Implementar lo que se desee realizar cuando ocurra la excepción de ctrl+c en el servidor
 
-    //seria como salir cliente o algo así
+    //seria como salir cliente o algo así 
 }
