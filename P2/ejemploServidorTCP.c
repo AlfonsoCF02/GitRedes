@@ -73,7 +73,7 @@ int main ( )
 			}
 			do
 			{
-				if(recv(new_sd, buffer, 100, 0) == -1)
+				if(recv(new_sd, buffer, 100, 0) == -1) //Cada cliente tiene un socket !=
 					perror("Error en la operación de recv");
 					
 					printf("el mensaje recibido fue: \n%s\n", buffer );
