@@ -66,6 +66,7 @@ int main ( )
 	}while(strcmp(buffer, "FIN") != 0);
 		
 	close(sd);
+	
 	return 0;
 }
 		
