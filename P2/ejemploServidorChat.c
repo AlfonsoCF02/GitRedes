@@ -266,10 +266,11 @@ void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClie
 
 
 void manejador (int signum){
+
     printf("\nSe ha recibido la señal sigint\n");
     signal(SIGINT,manejador);
     
     //Implementar lo que se desee realizar cuando ocurra la excepción de ctrl+c en el servidor
 
-    //seria como salir cliente o algo así aa
+    //seria como salir cliente o algo  así
 }
