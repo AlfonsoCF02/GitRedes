@@ -90,7 +90,7 @@ int main ( )
         else
         {
             
-            //He introducido información por teclado
+            //He introducido información por teclado (salir del servidor)
             if(FD_ISSET(0,&auxfds)){
                 bzero(buffer,sizeof(buffer));
                 
