@@ -1,136 +1,234 @@
-#include <stdio.h> 
-#include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 
-#define BOARD_ROWS 6
-#define BOARD_COLS 7
+char A[6][7];
+int ganar=0, empate=0;
+int max1=5, max2=5, max3=5, max4=5, max5=5, max6=5, max7=5;
 
-void printBoard(char *board);
-int takeTurn(char *board, int player, const char*);
-int checkWin(char *board);
-int checkFour(char *board, int, int, int, int);
-int horizontalCheck(char *board);
-int verticalCheck(char *board);
-int diagonalCheck(char *board);
-
-int main(int argc, char *argv[]){
-   const char *PIECES = "XO";
-   char board[BOARD_ROWS * BOARD_COLS];
-   memset(board, ' ', BOARD_ROWS * BOARD_COLS);
-
-   int turn, done = 0;
-
-   for(turn = 0; turn < BOARD_ROWS * BOARD_COLS && !done; turn++){
-      printBoard(board);   
-      while(!takeTurn(board, turn % 2, PIECES)){
-         printBoard(board);   
-         puts("**Column full!**\n");
-      }
-      done = checkWin(board);
-   } 
-   printBoard(board);
-
-   if(turn == BOARD_ROWS * BOARD_COLS && !done){
-      puts("It's a tie!");
-   } else {
-      turn--;
-      printf("Player %d (%c) wins!\n", turn % 2 + 1, PIECES[turn % 2]);
-   }
-
-   return 0;
-
-}
-void printBoard(char *board){
-   int row, col;
-
-   //system("clear");
-   puts("\n    ****Connect Four****\n");
-   for(row = 0; row < BOARD_ROWS; row++){
-      for(col = 0; col < BOARD_COLS; col++){
-         printf("| %c ",  board[BOARD_COLS * row + col]);
-      }
-      puts("|");
-      puts("-----------------------------");
-
-   }
-   puts("  1   2   3   4   5   6   7\n");
-
-}
-int takeTurn(char *board, int player, const char *PIECES){
-   int row, col = 0;
-   printf("Player %d (%c):\nEnter number coordinate: ", player + 1, PIECES[player]);
-
-   while(1){ 
-      if(1 != scanf("%d", &col) || col < 1 || col > 7 ){
-         while(getchar() != '\n');
-         puts("Number out of bounds! Try again.");
-      } else { 
-         break;
+void rellenaMatrizInicial(){
+   for(int i=0; i<6; i++){
+      for(int j=0; j<7; j++){
+         A[i][j]='-';
       }
    }
-   col--;
+}
 
-   for(row = BOARD_ROWS - 1; row >= 0; row--){
-      if(board[BOARD_COLS * row + col] == ' '){
-         board[BOARD_COLS * row + col] = PIECES[player];
-         return 1;
-      }
+void comprobarEmpate(){
+   if((max1==-1)&&(max2==-1)&&(max3==-1)&&(max4==-1)&&(max5==-1)&&(max6==-1)&&(max7==-1)){
+      printf("Hay un empate\n");
+      empate=1;
    }
-   return 0;
-
 }
-int checkWin(char *board){
-    return (horizontalCheck(board) || verticalCheck(board) || diagonalCheck(board));
 
-}
-int checkFour(char *board, int a, int b, int c, int d){
-    return (board[a] == board[b] && board[b] == board[c] && board[c] == board[d] && board[a] != ' ');
-
-}
-int horizontalCheck(char *board){
-    int row, col, idx;
-    const int WIDTH = 1;
-
-    for(row = 0; row < BOARD_ROWS; row++){
-       for(col = 0; col < BOARD_COLS - 3; col++){
-          idx = BOARD_COLS * row + col;
-          if(checkFour(board, idx, idx + WIDTH, idx + WIDTH * 2, idx + WIDTH * 3)){
-             return 1;
-          }
-       }
-    }
-    return 0;
-
-}
-int verticalCheck(char *board){
-    int row, col, idx;
-    const int HEIGHT = 7;
-
-    for(row = 0; row < BOARD_ROWS - 3; row++){
-       for(col = 0; col < BOARD_COLS; col++){
-          idx = BOARD_COLS * row + col;
-          if(checkFour(board, idx, idx + HEIGHT, idx + HEIGHT * 2, idx + HEIGHT * 3)){
-              return 1;
-          }
-       }
-    }
-    return 0;
-
-}
-int diagonalCheck(char *board){
-   int row, col, idx, count = 0;
-   const int DIAG_RGT = 6, DIAG_LFT = 8;
-
-   for(row = 0; row < BOARD_ROWS - 3; row++){
-      for(col = 0; col < BOARD_COLS; col++){
-         idx = BOARD_COLS * row + col;
-         if(count <= 3 && checkFour(board, idx, idx + DIAG_LFT, idx + DIAG_LFT * 2, idx + DIAG_LFT * 3) || count >= 3 && checkFour(board, idx, idx + DIAG_RGT, idx + DIAG_RGT * 2, idx + DIAG_RGT * 3)){
-            return 1;
+void comprobarVictoriaX(){
+   for(int i=0; i<6; i++){
+      for(int j=0; j<7; j++){
+         if((A[i][j]=='X')&&(A[i+1][j]=='X')&&(A[i+2][j]=='X')&&(A[i+3][j]=='X')){
+            ganar=1;
+            printf("Jugador1 ha ganado\n");
+            exit(-1);
          }
-         count++;
+         else if((A[i][j]=='X')&&(A[i][j+1]=='X')&&(A[i][j+2]=='X')&&(A[i][j+3]=='X')){
+            ganar=1;
+            printf("Jugador1 ha ganado\n");
+            exit(-1);
+         }
+         if((A[i][j]=='X')&&(A[i-1][j+1]=='X')&&(A[i-2][j+2]=='X')&&(A[i-3][j+3]=='X')){
+            ganar=1;
+            printf("Jugador1 ha ganado\n");
+            exit(-1);
+         }
+         if((A[i][j]=='X')&&(A[i+1][j-1]=='X')&&(A[i+2][j-2]=='X')&&(A[i+3][j-3]=='X')){
+            ganar=1;
+            printf("Jugador1 ha ganado\n");
+            exit(-1);
+         }
       }
-      count = 0;
    }
-   return 0;
+}
 
+void comprobarVictoriaO(){
+   for(int i=0; i<6; i++){
+      for(int j=0; j<7; j++){
+         if((A[i][j]=='O')&&(A[i+1][j]=='O')&&(A[i+2][j]=='O')&&(A[i+3][j]=='O')){
+            ganar=1;
+            printf("Jugador2 ha ganado\n");
+            exit(-1);
+         }
+         else if((A[i][j]=='O')&&(A[i][j+1]=='O')&&(A[i][j+2]=='O')&&(A[i][j+3]=='O')){
+            ganar=1;
+            printf("Jugador2 ha ganado\n");
+            exit(-1);
+         }
+         if((A[i][j]=='O')&&(A[i-1][j+1]=='O')&&(A[i-2][j+2]=='O')&&(A[i-3][j+3]=='O')){
+            ganar=1;
+            printf("Jugador2 ha ganado\n");
+            exit(-1);
+         }
+         if((A[i][j]=='O')&&(A[i+1][j-1]=='O')&&(A[i+2][j-2]=='O')&&(A[i+3][j-3]=='O')){
+            ganar=1;
+            printf("Jugador2 ha ganado\n");
+            exit(-1);
+         }
+      }
+   }
+}
+
+void imprimeMatrizActual(){
+   printf("|1|2|3|4|5|6|7|\n");
+   for(int i=0; i<6; i++){
+      for(int j=0; j<7; j++){
+         printf("|");
+         printf("%c", A[i][j]);
+      }
+      printf("|");
+      printf("\n");
+   }
+}
+
+int main(void)
+{
+int pos1=0, pos2=0;
+int jug1=1, jug2=0;
+rellenaMatrizInicial();
+imprimeMatrizActual();
+
+while(ganar==0&&empate==0){
+   while(jug1==1){
+      printf("Jugador1:");
+      scanf("%d",&pos1);
+      switch(pos1){
+         case 1:
+               if(max1>=0){
+                  A[max1][0]='X';
+                  max1--;
+                  jug1=0;
+                  jug2=1;
+                  pos2=0;
+               }
+               break;
+         case 2:
+               if(max2>=0){
+                  A[max2][1]='X';
+                  max2--;
+                  jug1=0;
+                  jug2=1;
+                  pos2=1;
+               }
+               break;
+         case 3:
+               if(max3>=0){
+                  A[max3][2]='X';
+                  max3--;
+                  jug1=0;
+                  jug2=1;
+                  pos2=2;
+               }
+               break;
+         case 4:
+               if(max4>=0){
+                  A[max4][3]='X';
+                  max4--;
+                  jug1=0;
+                  jug2=1;
+                  pos2=3;
+               }
+               break;
+         case 5:
+               if(max5>=0){
+                  A[max5][4]='X';
+                  max5--;
+                  jug1=0;
+                  jug2=1;
+                  pos2=4;
+               }
+               break;
+         case 6:
+               if(max6>=0){
+                  A[max6][5]='X';
+                  max6--;
+                  jug1=0;
+                  jug2=1;
+                  pos2=5;
+               }
+               break;
+         case 7:
+               if(max7>=0){
+                  A[max7][6]='X';
+                  max7--;
+                  jug1=0;
+                  jug2=1;pos2=6;
+               }
+               break;
+      };
+      imprimeMatrizActual();
+      comprobarEmpate();
+      comprobarVictoriaX();
+   }
+   while(jug2==1){
+      printf("Jugador2:");
+      scanf("%d",&pos1);
+      switch(pos1){
+         case 1:
+               if(max1>=0){
+                  A[max1][0]='O';
+                  max1--;
+                  jug2=0;
+                  jug1=1;
+               }
+               break;
+         case 2:
+               if(max2>=0){
+                  A[max2][1]='O';
+                  max2--;
+                  jug2=0;
+                  jug1=1;
+               }
+               break;
+         case 3:
+               if(max3>=0){
+                  A[max3][2]='O';
+                  max3--;
+                  jug2=0;
+                  jug1=1;
+               }
+               break;
+         case 4:
+               if(max4>=0){
+                  A[max4][3]='O';
+                  max4--;
+                  jug2=0;
+                  jug1=1;
+               }
+               break;
+         case 5:
+               if(max5>=0){
+                  A[max5][4]='O';
+                  max5--;
+                  jug2=0;
+                  jug1=1;
+               }
+               break;
+         case 6:
+               if(max6>=0){
+                  A[max6][5]='O';
+                  max6--;
+                  jug2=0;
+                  jug1=1;
+               }
+               break;
+         case 7:
+               if(max7>=0){
+                  A[max7][6]='O';
+                  max7--;
+                  jug2=0;
+                  jug1=1;
+               }
+               break;
+      };
+      imprimeMatrizActual();
+      comprobarEmpate();
+      comprobarVictoriaO();
+   }
+   }
 }
