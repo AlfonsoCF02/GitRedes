@@ -21,30 +21,35 @@ void comprobarEmpate(){
 }
 
 void comprobarVictoriaX(){
-   for(int i=0; i<6; i++){
+
+   for(int i=0; i<3; i++){
       for(int j=0; j<7; j++){
          if((A[i][j]=='X')&&(A[i+1][j]=='X')&&(A[i+2][j]=='X')&&(A[i+3][j]=='X')){
             ganar=1;
-            printf("Jugador2 ha ganado\n");
-            printf("Fallo 1X\n");
-            exit(-1);
-         }
-
-         if((A[i][j]=='X')&&(A[i][j+1]=='X')&&(A[i][j+2]=='X')&&(A[i][j+3]=='X')){
-            ganar=1;
-            printf("Jugador2 ha ganado\n");
-            printf("Fallo 2X\n");
+            printf("Jugador1 ha ganado\n");
             exit(-1);
          }
 
       }
+   }
+
+   for(int i=0; i<6; i++){
+      for(int j=0; j<4; j++){
+
+         if((A[i][j]=='X')&&(A[i][j+1]=='X')&&(A[i][j+2]=='X')&&(A[i][j+3]=='X')){
+            ganar=1;
+            printf("Jugador1 ha ganado\n");
+            exit(-1);
+         }
+
+      }
+   }
 
    for(int i=6; i<0; i--){ //diagonal arriba abajo i-d
       for(int j=0; j<7; j++){
          if((A[i][j]=='X')&&(A[i-1][j+1]=='X')&&(A[i-2][j+2]=='X')&&(A[i-3][j+3]=='X')){
             ganar=1;
-            printf("Jugador2 ha ganado\n");
-            printf("Fallo 3\n");
+            printf("Jugador1 ha ganado\n");
             exit(-1);
          } 
       }
@@ -54,39 +59,44 @@ void comprobarVictoriaX(){
       for(int j=7; j<0; j--){
          if((A[i][j]=='X')&&(A[i+1][j-1]=='X')&&(A[i+2][j-2]=='X')&&(A[i+3][j-3]=='X')){
             ganar=1;
-            printf("Jugador2 ha ganado\n");
-            printf("Fallo 4\n");
+            printf("Jugador1 ha ganado\n");
             exit(-1);
          } 
       }
    }
+
 }
 
 void comprobarVictoriaO(){
-   for(int i=0; i<6; i++){
-      for(int j=0; j<7; j++){
-         if((A[i][j]=='O')&&(A[i+1][j]=='O')&&(A[i+2][j]=='O')&&(A[i+3][j]=='O')){
-            ganar=1;
-            printf("Jugador2 ha ganado\n");
-            printf("Fallo 1\n");
-            exit(-1);
-         }
 
-         if((A[i][j]=='O')&&(A[i][j+1]=='O')&&(A[i][j+2]=='O')&&(A[i][j+3]=='O')){
+   for(int i=0; i<3; i++){
+      for(int j=0; j<7; j++){
+         if((A[i][j]=='X')&&(A[i+1][j]=='X')&&(A[i+2][j]=='X')&&(A[i+3][j]=='X')){
             ganar=1;
-            printf("Jugador2 ha ganado\n");
-            printf("Fallo 2\n");
+            printf("Jugador1 ha ganado\n");
             exit(-1);
          }
 
       }
+   }
+
+   for(int i=0; i<6; i++){
+      for(int j=0; j<4; j++){
+
+         if((A[i][j]=='X')&&(A[i][j+1]=='X')&&(A[i][j+2]=='X')&&(A[i][j+3]=='X')){
+            ganar=1;
+            printf("Jugador1 ha ganado\n");
+            exit(-1);
+         }
+
+      }
+   }
 
    for(int i=6; i<0; i--){ //diagonal arriba abajo i-d
       for(int j=0; j<7; j++){
-         if((A[i][j]=='O')&&(A[i-1][j+1]=='O')&&(A[i-2][j+2]=='O')&&(A[i-3][j+3]=='O')){
+         if((A[i][j]=='X')&&(A[i-1][j+1]=='X')&&(A[i-2][j+2]=='X')&&(A[i-3][j+3]=='X')){
             ganar=1;
-            printf("Jugador2 ha ganado\n");
-            printf("Fallo 3\n");
+            printf("Jugador1 ha ganado\n");
             exit(-1);
          } 
       }
@@ -94,27 +104,11 @@ void comprobarVictoriaO(){
 
    for(int i=0; i<6; i++){
       for(int j=7; j<0; j--){
-         if((A[i][j]=='O')&&(A[i+1][j-1]=='O')&&(A[i+2][j-2]=='O')&&(A[i+3][j-3]=='O')){
+         if((A[i][j]=='X')&&(A[i+1][j-1]=='X')&&(A[i+2][j-2]=='X')&&(A[i+3][j-3]=='X')){
             ganar=1;
-            printf("Jugador2 ha ganado\n");
-            printf("Fallo 4\n");
+            printf("Jugador1 ha ganado\n");
             exit(-1);
          } 
-      }
-   }
-
-}
-
-
-   for(int i=0; i<6; i++){
-      for(int j=7; j>0; j--){
-
-      if((A[i][j]=='O')&&(A[i+1][j+1]=='O')&&(A[i+2][j+2]=='O')&&(A[i+3][j+3]=='O')){
-         ganar=1;
-         printf("Jugador2 ha ganado\n");
-         exit(-1);
-      }
-
       }
    }
 
