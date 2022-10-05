@@ -23,17 +23,17 @@ void comprobarEmpate(){
 void comprobarVictoriaX(){
    for(int i=0; i<6; i++){
       for(int j=0; j<7; j++){
-         if((A[i][j]=='O')&&(A[i+1][j]=='O')&&(A[i+2][j]=='O')&&(A[i+3][j]=='O')){
+         if((A[i][j]=='X')&&(A[i+1][j]=='X')&&(A[i+2][j]=='X')&&(A[i+3][j]=='X')){
             ganar=1;
             printf("Jugador2 ha ganado\n");
-            printf("Fallo 1\n");
+            printf("Fallo 1X\n");
             exit(-1);
          }
 
-         else if((A[i][j]=='O')&&(A[i][j+1]=='O')&&(A[i][j+2]=='O')&&(A[i][j+3]=='O')){
+         if((A[i][j]=='X')&&(A[i][j+1]=='X')&&(A[i][j+2]=='X')&&(A[i][j+3]=='X')){
             ganar=1;
             printf("Jugador2 ha ganado\n");
-            printf("Fallo 2\n");
+            printf("Fallo 2X\n");
             exit(-1);
          }
 
