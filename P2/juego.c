@@ -41,7 +41,7 @@ void comprobarVictoriaX(){
 
    for(int i=6; i<0; i--){ //diagonal arriba abajo i-d
       for(int j=0; j<7; j++){
-         if((A[i][j]=='O')&&(A[i-1][j+1]=='O')&&(A[i-2][j+2]=='O')&&(A[i-3][j+3]=='O')){
+         if((A[i][j]=='X')&&(A[i-1][j+1]=='X')&&(A[i-2][j+2]=='X')&&(A[i-3][j+3]=='X')){
             ganar=1;
             printf("Jugador2 ha ganado\n");
             printf("Fallo 3\n");
@@ -52,7 +52,7 @@ void comprobarVictoriaX(){
 
    for(int i=0; i<6; i++){
       for(int j=7; j<0; j--){
-         if((A[i][j]=='O')&&(A[i+1][j-1]=='O')&&(A[i+2][j-2]=='O')&&(A[i+3][j-3]=='O')){
+         if((A[i][j]=='X')&&(A[i+1][j-1]=='X')&&(A[i+2][j-2]=='X')&&(A[i+3][j-3]=='X')){
             ganar=1;
             printf("Jugador2 ha ganado\n");
             printf("Fallo 4\n");
