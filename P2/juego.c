@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define MIN(i, j) (((i) < (j)) ? (i) : (j))
+#define MAX(i, j) (((i) > (j)) ? (i) : (j))
+
 char A[6][7];
 int ganar=0, empate=0;
 int max1=5, max2=5, max3=5, max4=5, max5=5, max6=5, max7=5;
