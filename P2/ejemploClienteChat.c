@@ -65,7 +65,7 @@ int main ( )
 
 	//Mostramos mensajes de información del cliente
 
-    printf("Si no está registrado introduzca: REGISTRO -u usuario -p password\n");
+    printf("\nSi no está registrado introduzca: REGISTRO -u usuario -p password\n");
 	printf("Si está registrado introduzca: USUARIO usuario\n");
 	printf("Si su usuario es validado introduzca: PASSWORD password\n");
 

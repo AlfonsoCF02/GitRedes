@@ -203,16 +203,31 @@ int main ( )
                             recibidos = recv(i,buffer,sizeof(buffer),0);
                             
                             if(recibidos > 0){
-                                char * cp_buffer = buffer;
                                 if(strcmp(buffer,"SALIR\n") == 0){  // Cliente qiuere salir
                                     
                                     salirCliente(i,&readfds,&numClientes,arrayClientes);
                                     
                                 }
-                                else if(strcmp(strtok(cp_buffer, " "),"USUARIO") == 0){ // Cliente manda USUARIO
-                                    if(existe_username(strtok(buffer, //completar))){
+                                else if(strcmp(strtok(buffer, " "),"USUARIO") == 0){ // Cliente manda USUARIO
+                                    char * user_tmp = strtok(NULL, " ");
+                                    //quitarmos el \n
+                                    user_tmp[strlen(user_tmp) - 1] = '\0';
+                                    printf("<%i>: %s %s\n",i, buffer, user_tmp);
+                                    
+                                    if(existe_username(user_tmp) == 0){
                                         //Devolver ok usuaruio correcto
+                                        bzero(buffer,sizeof(buffer));
+                                        sprintf(buffer, "+Ok. Usuario correcto");
+                                        printf("<%i>: %s\n",i, buffer);
+                                        send(i,buffer,sizeof(buffer),0);
                                     }
+                                    else{
+                                        bzero(buffer,sizeof(buffer));
+                                        sprintf(buffer, "-Err. Usuario incorrecto");
+                                        printf("<%i>: %s\n",i, buffer);
+                                        send(i,buffer,sizeof(buffer),0);
+                                    }
+
                                 }
                                 else{
                                     
@@ -298,18 +313,25 @@ int login(char user[], char pass[]){
     //Devuelve 0 si el login es correcto y 1 incorrecto
 
     FILE* f;
+    char leido[MSG_SIZE];
     char leido_usr[MSG_SIZE];
     char leido_pass[MSG_SIZE];
 
-    if((f = fopen(DATABASE, "r")) == NULL){
+    if((f = fopen(DATABASE, "r"))==NULL){
 
         printf("\nError, no logionse pudo abrir fichero <%s>", DATABASE);
         exit(-1);
 
     }
 
-    while (fscanf(f, "%s;%s", leido_usr, leido_pass) != EOF){ //se va leyendo el fichero
+    while (fgets(leido, MSG_SIZE, f) != NULL){ //se va leyendo el fichero
+
+        strcpy(leido_usr, strtok(leido, ";"));
+        strcpy(leido_pass, strtok(NULL, ";"));
         
+        leido_pass[strlen(leido_pass) - 1] = '\0';
+
+        printf("Leido <%s> y <%s>\n", leido_usr, leido_pass);
         if ((strcmp(leido_usr, user) == 0) && (strcmp(leido_pass, pass) == 0)){ //si el user existe
 
             return 0;
@@ -345,7 +367,7 @@ int registro(char user[], char pass[]){
         exit(-1);
     }
 
-    fprintf(f, "%s;%s", user, pass);
+    fprintf(f, "%s;%s\n", user, pass);
     
     //Cierre del flujo/fichero
     fclose(f);
@@ -359,18 +381,21 @@ int existe_username(char user[]){
     //Devuelve 0 si exitste el usuario y 1 si no
 
     FILE* f;
+    char leido[MSG_SIZE];
     char leido_usr[MSG_SIZE];
     char leido_pass[MSG_SIZE];
 
-    if((f = fopen(DATABASE, "r")) == NULL){
+    if((f = fopen(DATABASE, "r"))==NULL){
 
         printf("\nErrexisteor, no se pudo abrir fichero <%s>", DATABASE);
         exit(-1);
 
     }
 
-    while (fscanf(f, "%s;%s", leido_usr, leido_pass) != EOF){ //se va leyendo el fichero
-        
+    while (fgets(leido, MSG_SIZE, f) != NULL){ //se va leyendo el fichero
+
+        strcpy(leido_usr,strtok(leido, ";"));
+
         if (strcmp(leido_usr, user) == 0){ //si el user existe
 
             return 0;
