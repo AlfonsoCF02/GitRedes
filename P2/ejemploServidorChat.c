@@ -29,7 +29,7 @@ typedef struct user{
  * El servidor ofrece el servicio de un juego 4 en raya
  */
 
-void manejador(int signum);
+//void manejador(int signum);
 void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]);
 int login(char user[], char pass[]);
 int registro(char user[], char pass[]);
@@ -79,7 +79,7 @@ int main ( )
 
 
 	sockname.sin_family = AF_INET;
-	sockname.sin_port = htons(2000);
+	sockname.sin_port = htons(2060);
 	sockname.sin_addr.s_addr =  INADDR_ANY;
 
     // Ver si se asocia puerto e ip
@@ -110,7 +110,7 @@ int main ( )
     	FD_SET(0,&readfds);
    	
     //Capturamos la señal SIGINT (Ctrl+c)
-    	signal(SIGINT,manejador);
+    	//signal(SIGINT,manejador);
     
 	/*-----------------------------------------------------------------------
 		El servidor acepta una petición
@@ -203,11 +203,16 @@ int main ( )
                             recibidos = recv(i,buffer,sizeof(buffer),0);
                             
                             if(recibidos > 0){
-                                
+                                char * cp_buffer = buffer;
                                 if(strcmp(buffer,"SALIR\n") == 0){  // Cliente qiuere salir
                                     
                                     salirCliente(i,&readfds,&numClientes,arrayClientes);
                                     
+                                }
+                                else if(strcmp(strtok(cp_buffer, " "),"USUARIO") == 0){ // Cliente manda USUARIO
+                                    if(existe_username(strtok(buffer, //completar))){
+                                        //Devolver ok usuaruio correcto
+                                    }
                                 }
                                 else{
                                     
@@ -224,7 +229,8 @@ int main ( )
 
                                     
                                 }
-                                                                
+
+
                                 
                             }
                             //Si el cliente introdujo ctrl+c
@@ -273,6 +279,7 @@ void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClie
 
 }
 
+/**
 
 void manejador (int signum){
 
@@ -284,6 +291,7 @@ void manejador (int signum){
     //seria como salir cliente o algo  así
 }
 
+*/
 
 int login(char user[], char pass[]){
 

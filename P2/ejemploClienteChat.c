@@ -13,10 +13,6 @@
 int main ( )
 {
   
-    printf("Si no está registrado introduzca: REGISTRO -u usuario -p password");
-	printf("Si está registrado introduzca: USUARIO usuario");
-	printf("Si su usuario es validado introduzca: PASSWORD password");
-
 	/*---------------------------------------------------- 
 		Descriptor del socket y buffer de datos                
 	-----------------------------------------------------*/
@@ -46,8 +42,8 @@ int main ( )
 		servidor y el puerto del servicio que solicitamos
 	-------------------------------------------------------------------*/
 	sockname.sin_family = AF_INET;
-	sockname.sin_port = htons(2000);
-	sockname.sin_addr.s_addr =  inet_addr("172.21.20.97");
+	sockname.sin_port = htons(2060);
+	sockname.sin_addr.s_addr =  inet_addr("127.0.0.1");
 
 	/* ------------------------------------------------------------------
 		Se solicita la conexión con el servidor
@@ -66,6 +62,13 @@ int main ( )
     
     FD_SET(0,&readfds);
     FD_SET(sd,&readfds);
+
+	//Mostramos mensajes de información del cliente
+
+    printf("Si no está registrado introduzca: REGISTRO -u usuario -p password\n");
+	printf("Si está registrado introduzca: USUARIO usuario\n");
+	printf("Si su usuario es validado introduzca: PASSWORD password\n");
+
 
 	/* ------------------------------------------------------------------
 		Se transmite la información
