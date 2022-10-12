@@ -13,6 +13,10 @@
 int main ( )
 {
   
+    printf("Si no está registrado introduzca: REGISTRO -u usuario -p password");
+	printf("Si está registrado introduzca: USUARIO usuario");
+	printf("Si su usuario es validado introduzca: PASSWORD password");
+
 	/*---------------------------------------------------- 
 		Descriptor del socket y buffer de datos                
 	-----------------------------------------------------*/
@@ -63,7 +67,6 @@ int main ( )
     FD_SET(0,&readfds);
     FD_SET(sd,&readfds);
 
-    
 	/* ------------------------------------------------------------------
 		Se transmite la información
 	-------------------------------------------------------------------*/

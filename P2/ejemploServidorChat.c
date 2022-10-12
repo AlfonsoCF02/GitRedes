@@ -17,7 +17,12 @@
 #define DATABASE "Database.txt"
 
 
-
+typedef struct user{
+    int sd;
+    char user[MSG_SIZE];
+    char pass[MSG_SIZE];
+    int logeado; // 0 si - 1 no
+}user;
 
 
 /*
@@ -41,18 +46,16 @@ int main ( )
 	struct sockaddr_in sockname, from;
 	char buffer[MSG_SIZE];
 	socklen_t from_len;
-    	fd_set readfds, auxfds;
-   	 int salida;
-   	 int arrayClientes[MAX_CLIENTS];
-    	int numClientes = 0;
-   	 //contadores
-    	int i,j,k;
+    fd_set readfds, auxfds;
+   	int salida;
+   	int arrayClientes[MAX_CLIENTS];
+    int numClientes = 0;
+   	//contadores
+    int i,j,k;
 	int recibidos;
-   	 char identificador[MSG_SIZE];
-    
-    	int on, ret;
+   	char identificador[MSG_SIZE];
+    int on, ret;
 
-    
     
 	/* --------------------------------------------------
 		Se abre el socket 
@@ -73,7 +76,6 @@ int main ( )
 
     	on = 1;
     	ret = setsockopt( sd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
-
 
 
 	sockname.sin_family = AF_INET;
@@ -144,7 +146,7 @@ int main ( )
                                     numClientes++;
                                     FD_SET(new_sd,&readfds);
                                 
-                                    strcpy(buffer, "Bienvenido al chat\n");
+                                    strcpy(buffer, "+0k. Usuario conectado\n");
                                 
                                     send(new_sd,buffer,sizeof(buffer),0);
                                 
@@ -291,7 +293,7 @@ int login(char user[], char pass[]){
     char leido_usr[MSG_SIZE];
     char leido_pass[MSG_SIZE];
 
-    if((f = fopen(DATABASE, "r"))==NULL){
+    if((f = fopen(DATABASE, "r")) == NULL){
 
         printf("\nError, no logionse pudo abrir fichero <%s>", DATABASE);
         exit(-1);
@@ -352,7 +354,7 @@ int existe_username(char user[]){
     char leido_usr[MSG_SIZE];
     char leido_pass[MSG_SIZE];
 
-    if((f = fopen(DATABASE, "r"))==NULL){
+    if((f = fopen(DATABASE, "r")) == NULL){
 
         printf("\nErrexisteor, no se pudo abrir fichero <%s>", DATABASE);
         exit(-1);
