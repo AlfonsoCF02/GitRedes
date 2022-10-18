@@ -133,6 +133,7 @@ int main(void)
 {
 int pos1=0, pos2=0; //X, Y de la matriz
 int jug1=1, jug2=0; //Para los turnos
+
 rellenaMatrizInicial();
 imprimeMatrizActual();
 

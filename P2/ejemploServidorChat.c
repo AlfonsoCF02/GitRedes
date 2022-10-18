@@ -22,8 +22,19 @@ typedef struct user{
     char user[MSG_SIZE];
     char pass[MSG_SIZE];
     int logeado; // 0 si - 1 no
+    int enespera = 0; // 0 -> no
+    int turno = 0; // 0 -> no
 }user;
 
+typedef struct partida{
+    int sd1;
+    int sd2;
+    char A[6][7];
+    int enjuego = 0; // 0 -> no
+}partida;
+
+usuario usuarios[MAX_CLIENTS];
+partida partidas[MAX_P_SIMULT];
 
 /*
  * El servidor ofrece el servicio de un juego 4 en raya
