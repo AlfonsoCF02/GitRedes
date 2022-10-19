@@ -278,6 +278,7 @@ int main ( )
                                     //Comprobamos el formato
 
                                     char aux[MSG_SIZE];
+                                    int error_flag = 0;
                                     sprintf(aux, strtok(NULL, " "));
                                     if( strcmp(aux,"-u") == 0 ){
                                         //Almacenamos el user
@@ -294,25 +295,27 @@ int main ( )
                                                 send(i,buffer,sizeof(buffer),0);
                                             }
                                             else{
-                                                bzero(buffer,sizeof(buffer));
-                                                sprintf(buffer, "-Err. Usuario no registrado");
-                                                printf("<%i>: %s\n",i, buffer);
-                                                send(i,buffer,sizeof(buffer),0);
+                                                
+                                                //Para evitar poner muchas veces el mensaje de error
+                                                error_flag = 1;
+
                                             }
                                         }
                                         else{
-                                            bzero(buffer,sizeof(buffer));
-                                            sprintf(buffer, "-Err. Usuario no registrado");
-                                            printf("<%i>: %s\n",i, buffer);
-                                            send(i,buffer,sizeof(buffer),0);
+                                            error_flag = 1;
                                         }
                                     }
                                     else{
-                                            bzero(buffer,sizeof(buffer));
-                                            sprintf(buffer, "-Err. Usuario no registrado");
-                                            printf("<%i>: %s\n",i, buffer);
-                                            send(i,buffer,sizeof(buffer),0);
-                                        }   
+                                            error_flag = 1;
+                                        }
+
+                                    if(error_flag != 0){
+                                        bzero(buffer,sizeof(buffer));
+                                        sprintf(buffer, "-Err. Usuario no registrado");
+                                        printf("<%i>: %s\n",i, buffer);
+                                        send(i,buffer,sizeof(buffer),0);
+                                    }
+
                                 }
                                 else{
                                     
@@ -416,7 +419,6 @@ int login(char user[], char pass[]){
         
         leido_pass[strlen(leido_pass) - 1] = '\0';
 
-        printf("Leido <%s> y <%s>\n", leido_usr, leido_pass);
         if ((strcmp(leido_usr, user) == 0) && (strcmp(leido_pass, pass) == 0)){ //si el user existe
 
             return 0;
