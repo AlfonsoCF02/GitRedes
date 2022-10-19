@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define MAX_LINE 6
+#define MAX_COLUMN 7
 
 #define MIN(i, j) (((i) < (j)) ? (i) : (j))
 #define MAX(i, j) (((i) > (j)) ? (i) : (j))
@@ -23,39 +25,37 @@ void comprobarEmpate(){
    }
 }
 
-void comprobarVictoriaX(){
-
-   for(int i=0; i<3; i++){
-      for(int j=0; j<7; j++){
-         if((A[i][j]=='X')&&(A[i+1][j]=='X')&&(A[i+2][j]=='X')&&(A[i+3][j]=='X')){
+void comprobarVictoriaX(int pos1, int pos2){
+int count=0;
+      for(int j=0; j<MAX_COLUMN; j++){
+         if(A[pos1][j]=='X'){
+            count++;
+         }
+         if(count==4){
             ganar=1;
             printf("Jugador1 ha ganado\n");
             exit(-1);
          }
-
       }
-   }
 
-   for(int i=0; i<6; i++){
-      for(int j=0; j<4; j++){
-
-         if((A[i][j]=='X')&&(A[i][j+1]=='X')&&(A[i][j+2]=='X')&&(A[i][j+3]=='X')){
+count=0;
+   for(int i=0; i<MAX_LINE; i++){
+         if(A[i][pos2]=='X'){
+            count++;
+         }
+         if(count==4){
             ganar=1;
             printf("Jugador1 ha ganado\n");
             exit(-1);
          }
-
       }
-   }
 
-   for(int i=6; i<0; i--){ //diagonal arriba abajo i-d
-      for(int j=0; j<7; j++){
-         if((A[i][j]=='X')&&(A[i-1][j+1]=='X')&&(A[i-2][j+2]=='X')&&(A[i-3][j+3]=='X')){
-            ganar=1;
-            printf("Jugador1 ha ganado\n");
-            exit(-1);
-         } 
-      }
+count=0;
+int x=pos1;
+int y=pos2;
+   while((x>0&&x<5)&&(y>0&&y<6)){
+      x++;
+      y--;
    }
 
    for(int i=0; i<6; i++){
@@ -70,30 +70,31 @@ void comprobarVictoriaX(){
 
 }
 
-void comprobarVictoriaO(){
+void comprobarVictoriaO(int pos1, int pos2){
 
-   for(int i=0; i<3; i++){
-      for(int j=0; j<7; j++){
-         if((A[i][j]=='O')&&(A[i+1][j]=='O')&&(A[i+2][j]=='O')&&(A[i+3][j]=='O')){
+int count=0;
+      for(int j=0; j<MAX_COLUMN; j++){
+         if(A[pos1][j]=='O'){
+            count++;
+         }
+         if(count==4){
             ganar=1;
             printf("Jugador2 ha ganado\n");
             exit(-1);
          }
-
       }
-   }
 
-   for(int i=0; i<6; i++){
-      for(int j=0; j<4; j++){
-
-         if((A[i][j]=='O')&&(A[i][j+1]=='O')&&(A[i][j+2]=='O')&&(A[i][j+3]=='O')){
+count=0;
+   for(int i=0; i<MAX_LINE; i++){
+         if(A[i][pos2]=='O'){
+            count++;
+         }
+         if(count==4){
             ganar=1;
             printf("Jugador2 ha ganado\n");
             exit(-1);
          }
-
       }
-   }
 
    for(int i=6; i<0; i--){ //diagonal arriba abajo i-d
       for(int j=0; j<7; j++){
@@ -206,8 +207,8 @@ while(ganar==0&&empate==0){
                break;
       };
       imprimeMatrizActual();
-      comprobarEmpate();
-      comprobarVictoriaX();
+      comprobarEmpate(pos1, pos2);
+      comprobarVictoriaX(pos1, pos2);
    }
    while(jug2==1){
       printf("Jugador2:");
@@ -272,7 +273,7 @@ while(ganar==0&&empate==0){
       };
       imprimeMatrizActual();
       comprobarEmpate();
-      comprobarVictoriaO();
+      comprobarVictoriaO(pos1, pos2);
    }
    }
 }

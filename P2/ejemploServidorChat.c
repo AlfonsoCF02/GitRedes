@@ -30,10 +30,10 @@ typedef struct partida{
     int sd1;
     int sd2;
     char A[6][7];
-    int enjuego = 0; // 0 -> no
+    int enjuego; // 0 -> no
 }partida;
 
-usuario usuarios[MAX_CLIENTS];
+user usuarios[MAX_CLIENTS];
 partida partidas[MAX_P_SIMULT];
 
 /*
