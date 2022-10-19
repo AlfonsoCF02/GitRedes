@@ -253,6 +253,26 @@ int main ( )
                                     }
 
                                 }
+                                else if(strcmp(orden,"LOGIN") == 0){ // Cliente manda USUARIO
+                                    
+                                    //Almacenamos los datos del usuario
+                                    sprintf(user_tmp, strtok(NULL, " "));
+                                    sprintf(pass_tmp, strtok(NULL, " "));
+                                    
+                                    if(login(user_tmp, pass_tmp) == 0){
+                                        bzero(buffer,sizeof(buffer));
+                                        sprintf(buffer, "+Ok. Usuario validado");
+                                        printf("<%i>: %s\n",i, buffer);
+                                        send(i,buffer,sizeof(buffer),0);
+                                    }
+                                    else{
+                                        bzero(buffer,sizeof(buffer));
+                                        sprintf(buffer, "-Err. Error en la validación");
+                                        printf("<%i>: %s\n",i, buffer);
+                                        send(i,buffer,sizeof(buffer),0);
+                                    }
+
+                                }
                                 else if(strcmp(orden,"REGISTRO") == 0){ // Cliente manda REGISTRO
 
                                     //Comprobamos el formato
