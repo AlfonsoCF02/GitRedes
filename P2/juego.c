@@ -9,6 +9,7 @@
 char A[6][7];
 int ganar=0, empate=0;
 int max1=5, max2=5, max3=5, max4=5, max5=5, max6=5, max7=5;
+int num1=0, num2=0, num3=0, num4=0, num5=0, num6=0, num7=0;
 
 void rellenaMatrizInicial(){
    for(int i=0; i<6; i++){
@@ -50,22 +51,27 @@ count=0;
          }
       }
 
-count=0;
+
 int x=pos1;
 int y=pos2;
-   while((x>0&&x<5)&&(y>0&&y<6)){
-      x++;
+printf("X antes de bucle:%d\n", x);
+   while((y>0&&y<6)&&(x>1&&x<6)){
+      x--;
       y--;
+      printf("%d\n", x);
    }
-
-   for(int i=0; i<6; i++){
-      for(int j=7; j<0; j--){
-         if((A[i][j]=='X')&&(A[i+1][j-1]=='X')&&(A[i+2][j-2]=='X')&&(A[i+3][j-3]=='X')){
+int diagonalCount=0;
+   for(int i=x, j=0; (i<=0)&&(j<=MAX_COLUMN); i++, j++){
+      printf("[%d][%d]\n", i,j);
+         if(A[i][j]=='X'){
+            diagonalCount++;
+            printf("Cuenta:%d\n", diagonalCount);
+         }
+         if(diagonalCount==4){
             ganar=1;
             printf("Jugador1 ha ganado\n");
             exit(-1);
-         } 
-      }
+         }
    }
 
 }
@@ -132,7 +138,7 @@ void imprimeMatrizActual(){
 
 int main(void)
 {
-int pos1=0, pos2=0; //X, Y de la matriz
+int pos1=0, pos2=0, x=0, y=0; //X, Y de la matriz
 int jug1=1, jug2=0; //Para los turnos
 
 rellenaMatrizInicial();
@@ -146,69 +152,84 @@ while(ganar==0&&empate==0){
          case 1:
                if(max1>=0){
                   A[max1][0]='X';
+                  x=max1;
                   max1--;
                   jug1=0;
                   jug2=1;
                   pos2=0;
+                  num1++;
                }
                break;
          case 2:
                if(max2>=0){
                   A[max2][1]='X';
+                  x=max2;
                   max2--;
                   jug1=0;
                   jug2=1;
                   pos2=1;
+                  num2++;
                }
                break;
          case 3:
                if(max3>=0){
                   A[max3][2]='X';
+                  x=max3;
                   max3--;
                   jug1=0;
                   jug2=1;
                   pos2=2;
+                  num3++;
                }
                break;
          case 4:
                if(max4>=0){
                   A[max4][3]='X';
+                  x=max4;
                   max4--;
                   jug1=0;
                   jug2=1;
                   pos2=3;
+                  num4++;
                }
                break;
          case 5:
                if(max5>=0){
                   A[max5][4]='X';
+                  x=max5;
                   max5--;
                   jug1=0;
                   jug2=1;
                   pos2=4;
+                  num5++;
                }
                break;
          case 6:
                if(max6>=0){
                   A[max6][5]='X';
+                  x=max6;
                   max6--;
                   jug1=0;
                   jug2=1;
                   pos2=5;
+                  num6++;
                }
                break;
          case 7:
                if(max7>=0){
                   A[max7][6]='X';
+                  x=max7;
                   max7--;
                   jug1=0;
-                  jug2=1;pos2=6;
+                  jug2=1;
+                  pos2=6;
+                  num7++;
                }
                break;
       };
       imprimeMatrizActual();
-      comprobarEmpate(pos1, pos2);
-      comprobarVictoriaX(pos1, pos2);
+      comprobarEmpate(x, pos2);
+      comprobarVictoriaX(x, pos2);
    }
    while(jug2==1){
       printf("Jugador2:");
@@ -217,57 +238,78 @@ while(ganar==0&&empate==0){
          case 1:
                if(max1>=0){
                   A[max1][0]='O';
+                  x=max1;
+                  pos2=0;
                   max1--;
                   jug2=0;
                   jug1=1;
+                  num1++;
                }
                break;
          case 2:
                if(max2>=0){
                   A[max2][1]='O';
+                  x=max2;
+                  pos2=1;
                   max2--;
                   jug2=0;
                   jug1=1;
+                  num2++;
                }
                break;
          case 3:
                if(max3>=0){
                   A[max3][2]='O';
+                  x=max3;
+                  pos2=2;
                   max3--;
                   jug2=0;
                   jug1=1;
+                  num3++;
                }
                break;
          case 4:
                if(max4>=0){
                   A[max4][3]='O';
+                  pos2=3;
+                  x=max4;
                   max4--;
                   jug2=0;
                   jug1=1;
+                  num4++;
                }
                break;
          case 5:
                if(max5>=0){
                   A[max5][4]='O';
+                  pos2=4;
+                  x=max5;
                   max5--;
                   jug2=0;
                   jug1=1;
+                  num5++;
                }
                break;
          case 6:
                if(max6>=0){
                   A[max6][5]='O';
+                  pos2=5;
+                  x=max6;
                   max6--;
                   jug2=0;
                   jug1=1;
+                  num6++;
                }
                break;
          case 7:
                if(max7>=0){
                   A[max7][6]='O';
+                  x=max7;
+                  pos2=6;
                   max7--;
                   jug2=0;
                   jug1=1;
+                  num7++;
                }
                break;
       };
