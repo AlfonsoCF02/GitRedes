@@ -214,19 +214,32 @@ int main ( )
                             recibidos = recv(i,buffer,sizeof(buffer),0);
                             
                             if(recibidos > 0){
+
+                                //Quitamos el \0 del mensaje recibido
+                                buffer[strlen(buffer) - 1] = '\0';
+
+                                //Mostramos el mensaje recibido
+                                printf("<%i>: %s\n",i, buffer);
+
+                                //Vemos la orden recibida
+                                    //si comparamos usando strtok en cada if se jode
+                                char orden[MSG_SIZE];
+                                sprintf(orden, strtok(buffer, " "));
+
+                                char user_tmp[MSG_SIZE];
+                                char pass_tmp[MSG_SIZE];
+
                                 if(strcmp(buffer,"SALIR\n") == 0){  // Cliente qiuere salir
                                     
                                     salirCliente(i,&readfds,&numClientes,arrayClientes);
                                     
                                 }
-                                else if(strcmp(strtok(buffer, " "),"USUARIO") == 0){ // Cliente manda USUARIO
-                                    char * user_tmp = strtok(NULL, " ");
-                                    //quitarmos el \n
-                                    user_tmp[strlen(user_tmp) - 1] = '\0';
-                                    printf("<%i>: %s %s\n",i, buffer, user_tmp);
+                                else if(strcmp(orden,"USUARIO") == 0){ // Cliente manda USUARIO
+                                    
+                                    //Almacenamos el usuario en user_tmp
+                                    sprintf(user_tmp, strtok(NULL, " "));
                                     
                                     if(existe_username(user_tmp) == 0){
-                                        //Devolver ok usuaruio correcto
                                         bzero(buffer,sizeof(buffer));
                                         sprintf(buffer, "+Ok. Usuario correcto");
                                         printf("<%i>: %s\n",i, buffer);
@@ -239,6 +252,47 @@ int main ( )
                                         send(i,buffer,sizeof(buffer),0);
                                     }
 
+                                }
+                                else if(strcmp(orden,"REGISTRO") == 0){ // Cliente manda REGISTRO
+
+                                    //Comprobamos el formato
+
+                                    char aux[MSG_SIZE];
+                                    sprintf(aux, strtok(NULL, " "));
+                                    if( strcmp(aux,"-u") == 0 ){
+                                        //Almacenamos el user
+                                        sprintf(user_tmp, strtok(NULL, " "));
+                                        sprintf(aux, strtok(NULL, " "));
+                                        if(strcmp(aux,"-p") == 0){
+                                            //Almacenamos la pass
+                                            sprintf(pass_tmp, strtok(NULL, " "));
+                                            if(registro(user_tmp, pass_tmp) == 0){
+                                                //Devolver ok usuaruio correcto
+                                                bzero(buffer,sizeof(buffer));
+                                                sprintf(buffer, "+Ok. Usuario registrado");
+                                                printf("<%i>: %s\n",i, buffer);
+                                                send(i,buffer,sizeof(buffer),0);
+                                            }
+                                            else{
+                                                bzero(buffer,sizeof(buffer));
+                                                sprintf(buffer, "-Err. Usuario no registrado");
+                                                printf("<%i>: %s\n",i, buffer);
+                                                send(i,buffer,sizeof(buffer),0);
+                                            }
+                                        }
+                                        else{
+                                            bzero(buffer,sizeof(buffer));
+                                            sprintf(buffer, "-Err. Usuario no registrado");
+                                            printf("<%i>: %s\n",i, buffer);
+                                            send(i,buffer,sizeof(buffer),0);
+                                        }
+                                    }
+                                    else{
+                                            bzero(buffer,sizeof(buffer));
+                                            sprintf(buffer, "-Err. Usuario no registrado");
+                                            printf("<%i>: %s\n",i, buffer);
+                                            send(i,buffer,sizeof(buffer),0);
+                                        }   
                                 }
                                 else{
                                     
