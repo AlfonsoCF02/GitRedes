@@ -168,7 +168,7 @@ int main ( )
                             else
                             {
                                 if(numClientes < MAX_CLIENTS){
-                                    
+
                                     arrayClientes[numClientes] = new_sd; //A quien hay que mandar
                                     numClientes++;
                                     FD_SET(new_sd,&readfds);
@@ -199,7 +199,7 @@ int main ( )
                             fgets(buffer, sizeof(buffer),stdin);
                             
                             //Controlar si se ha introducido "SALIR", cerrando todos los sockets y finalmente saliendo del servidor. (implementar)
-                            if(strcmp(buffer,"SALIR\n") == 0 || manejador_flag == 1){
+                            if(strcmp(buffer,"SALIR\n") == 0){
                              
                                 for (j = 0; j < numClientes; j++){
 						            bzero(buffer, sizeof(buffer));
@@ -239,7 +239,7 @@ int main ( )
                                 char user_tmp[MSG_SIZE];
                                 char pass_tmp[MSG_SIZE];
 
-                                if(strcmp(buffer,"SALIR\n") == 0){  // Cliente qiuere salir
+                                if(strcmp(buffer,"SALIR") == 0){  // Cliente qiuere salir
                                     
                                     salirCliente(i,&readfds,&numClientes,arrayClientes);
                                     
@@ -407,7 +407,7 @@ int main ( )
 }
 
 void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]){
-  
+    
     char buffer[250];
     int j;
     
@@ -430,6 +430,7 @@ void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClie
         if(arrayClientes[j] != socket)
             send(arrayClientes[j],buffer,sizeof(buffer),0);
 
+    printf("<%i>: Desconectado\n",socket);
 
 }
 
