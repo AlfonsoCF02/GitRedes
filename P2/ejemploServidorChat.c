@@ -176,6 +176,8 @@ int main ( )
                                     strcpy(buffer, "+0k. Usuario conectado\n");
                                 
                                     send(new_sd,buffer,sizeof(buffer),0);
+
+                                    printf("<%i>: Conectado\n",new_sd);
                                 
                                 }
                                 else
@@ -288,7 +290,6 @@ int main ( )
                                     //Comprobamos el formato
 
                                     char aux[MSG_SIZE];
-                                    int error_flag = 0;
                                     sprintf(aux, strtok(NULL, " "));
                                     if( strcmp(aux,"-u") == 0 ){
                                         //Almacenamos el user
@@ -306,22 +307,23 @@ int main ( )
                                             }
                                             else{
                                                 
-                                                //Para evitar poner muchas veces el mensaje de error
-                                                error_flag = 1;
+                                                bzero(buffer,sizeof(buffer));
+                                                sprintf(buffer, "-Err. El nombre de usuario ya existe");
+                                                printf("<%i>: %s\n",i, buffer);
+                                                send(i,buffer,sizeof(buffer),0);
 
                                             }
                                         }
                                         else{
-                                            error_flag = 1;
+                                            bzero(buffer,sizeof(buffer));
+                                            sprintf(buffer, "-Err. El formato incorrecto (-p)");
+                                            printf("<%i>: %s\n",i, buffer);
+                                            send(i,buffer,sizeof(buffer),0);
                                         }
                                     }
                                     else{
-                                            error_flag = 1;
-                                        }
-
-                                    if(error_flag != 0){
                                         bzero(buffer,sizeof(buffer));
-                                        sprintf(buffer, "-Err. Usuario no registrado");
+                                        sprintf(buffer, "-Err. El formato incorrecto (-u)");
                                         printf("<%i>: %s\n",i, buffer);
                                         send(i,buffer,sizeof(buffer),0);
                                     }
@@ -331,11 +333,10 @@ int main ( )
                                     
                                     //Almacenamos la posicion recibida
                                     sprintf(buffer, strtok(NULL, " "));
-                                    printf("<%i>:buffer rec: %s\n",i, buffer);
 
                                     //Comprobamos si la cadena es un numero y convertirlo a int
                                     char *endptr;
-                                    int pos_rec = strtol(buffer, &endptr, 10);
+                                    int pos_rec = (int) strtol(buffer, &endptr, 10);
 
                                     if (((*buffer) != '\0') && ((*endptr) == '\0')) {
                                         // strtol tiene éxito, la cadena contiene un número
@@ -350,10 +351,10 @@ int main ( )
                                         */
                                         
                                         //Implemetar logica para colocar la ficha
-                                        
+                                            
                                             //Cuidado controlar que si no se puede colocar
                                             //en la posicion seleccionada retornar error 
-                                            //del else
+                                            //del else  
 
                                     }
                                     else{
@@ -391,7 +392,6 @@ int main ( )
                             if(recibidos == 0) // Si el numero de bits recibidos es 0 es xk el ciente ha salido
                                 // de forma abructa
                             {
-                                printf("El socket %d, ha introducido ctrl+c\n", i);
                                 //Eliminar ese socket
                                 salirCliente(i,&readfds,&numClientes,arrayClientes);
                             }
@@ -457,6 +457,15 @@ int login(char user[], char pass[]){
     char leido_usr[MSG_SIZE];
     char leido_pass[MSG_SIZE];
 
+    //Si no existe el fichero lo creamos
+    if((f = fopen(DATABASE, "a")) == NULL)  
+    {
+        printf("\nErro registro, no se pudo abrir fichero <%s>", DATABASE);
+        exit(-1);
+    }
+    fclose(f);
+
+    //Lo abrimos para lectura (si no existe peta, mejor leer y que este vacio)
     if((f = fopen(DATABASE, "r"))==NULL){
 
         printf("\nError, no logionse pudo abrir fichero <%s>", DATABASE);
@@ -502,7 +511,7 @@ int registro(char user[], char pass[]){
 
     if((f = fopen(DATABASE, "a")) == NULL)  
     {
-        printf("\nErroregistorr, no se pudo abrir fichero <%s>", DATABASE);
+        printf("\nErro registro, no se pudo abrir fichero <%s>", DATABASE);
         exit(-1);
     }
 
@@ -524,6 +533,15 @@ int existe_username(char user[]){
     char leido_usr[MSG_SIZE];
     char leido_pass[MSG_SIZE];
 
+    //Si no existe el fichero lo creamos
+    if((f = fopen(DATABASE, "a")) == NULL)  
+    {
+        printf("\nErro registro, no se pudo abrir fichero <%s>", DATABASE);
+        exit(-1);
+    }
+    fclose(f);
+
+    //Lo abrimos para lectura (si no existe peta, mejor leer y que este vacio)
     if((f = fopen(DATABASE, "r"))==NULL){
 
         printf("\nErrexisteor, no se pudo abrir fichero <%s>", DATABASE);
