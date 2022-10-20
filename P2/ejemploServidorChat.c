@@ -10,12 +10,12 @@
 #include <time.h>
 #include <arpa/inet.h>
 
-
 #define MSG_SIZE 250
 #define MAX_CLIENTS 50
 #define MAX_P_SIMULT 10
 #define DATABASE "Database.txt"
 
+int manejador_flag = 0;
 
 typedef struct user{
     int sd;
@@ -40,7 +40,7 @@ partida partidas[MAX_P_SIMULT];
  * El servidor ofrece el servicio de un juego 4 en raya
  */
 
-//void manejador(int signum);
+void manejador(int signum);
 void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]);
 int login(char user[], char pass[]);
 int registro(char user[], char pass[]);
@@ -113,7 +113,6 @@ int main ( )
 		perror("Error en la operación de listen");
 		exit(1);
 	}
-    
 	//Inicializar los conjuntos fd_set
     	FD_ZERO(&readfds);
     	FD_ZERO(&auxfds);
@@ -121,13 +120,29 @@ int main ( )
     	FD_SET(0,&readfds);
    	
     //Capturamos la señal SIGINT (Ctrl+c)
-    	//signal(SIGINT,manejador);
+    	signal(SIGINT,manejador);
     
 	/*-----------------------------------------------------------------------
 		El servidor acepta una petición
 	------------------------------------------------------------------------ */
 		while(1){
             
+            //Comprobamos que no se haya pulsado ctrl+c en el server
+            if(manejador_flag == 1){
+                             
+                for (j = 0; j < numClientes; j++){
+                    bzero(buffer, sizeof(buffer));
+                    strcpy(buffer,"Desconexión servidor\n"); 
+                    send(arrayClientes[j],buffer , sizeof(buffer),0);
+                    close(arrayClientes[j]);
+                    FD_CLR(arrayClientes[j],&readfds);
+                }
+
+                close(sd);
+                exit(-1);              
+                                
+            }
+
             //Esperamos recibir mensajes de los clientes 
             // (nuevas conexiones o mensajes de los clientes ya conectados)
             
@@ -153,6 +168,7 @@ int main ( )
                             else
                             {
                                 if(numClientes < MAX_CLIENTS){
+                                    
                                     arrayClientes[numClientes] = new_sd; //A quien hay que mandar
                                     numClientes++;
                                     FD_SET(new_sd,&readfds);
@@ -161,13 +177,6 @@ int main ( )
                                 
                                     send(new_sd,buffer,sizeof(buffer),0);
                                 
-                                    for(j=0; j<(numClientes-1);j++){
-                                    
-                                        bzero(buffer,sizeof(buffer));
-                                        sprintf(buffer, "Nuevo Cliente conectado: %d\n",new_sd);
-                                        //Se manda a cada cliente conectado (array)
-                                        send(arrayClientes[j],buffer,sizeof(buffer),0);
-                                    }
                                 }
                                 else
                                 {   //Si hay muchos a la puta calle
@@ -186,21 +195,22 @@ int main ( )
                                 // o cuanto llevan conectados
         
                             //Se ha introducido información de teclado
-                            bzero(buffer, sizeof(buffer)); //Limpiar el buffer??¿?¿?¿?¿
+                            bzero(buffer, sizeof(buffer)); //Limpiar el buffer
                             fgets(buffer, sizeof(buffer),stdin);
                             
                             //Controlar si se ha introducido "SALIR", cerrando todos los sockets y finalmente saliendo del servidor. (implementar)
-                            if(strcmp(buffer,"SALIR\n") == 0){
+                            if(strcmp(buffer,"SALIR\n") == 0 || manejador_flag == 1){
                              
                                 for (j = 0; j < numClientes; j++){
-						   bzero(buffer, sizeof(buffer));
-						   strcpy(buffer,"Desconexión servidor\n"); 
+						            bzero(buffer, sizeof(buffer));
+						            strcpy(buffer,"Desconexión servidor\n"); 
                                     send(arrayClientes[j],buffer , sizeof(buffer),0);
                                     close(arrayClientes[j]);
                                     FD_CLR(arrayClientes[j],&readfds);
                                 }
-                                    close(sd);
-                                    exit(-1);
+
+                                close(sd);
+                                exit(-1);
                                 
                                 
                             }
@@ -317,20 +327,61 @@ int main ( )
                                     }
 
                                 }
+                                else if(strcmp(orden,"COLOCAR-FICHA") == 0){ 
+                                    
+                                    //Almacenamos la posicion recibida
+                                    sprintf(buffer, strtok(NULL, " "));
+                                    printf("<%i>:buffer rec: %s\n",i, buffer);
+
+                                    //Comprobamos si la cadena es un numero y convertirlo a int
+                                    char *endptr;
+                                    int pos_rec = strtol(buffer, &endptr, 10);
+
+                                    if (((*buffer) != '\0') && ((*endptr) == '\0')) {
+                                        // strtol tiene éxito, la cadena contiene un número
+                                        // y lo almacena convertido a int en pos_rec
+
+                                        /*  FUNCIONAMIENTO strol
+                                        long strtol(const char *nptr, char **endptr, int base);
+                                        Traducción: Si endptr no es NULL, strtol() almacena la dirección del primer carácter 
+                                        inválido en *endptr. Si no aparece ningún dígito, strtol() almacena el valor original 
+                                        de nptr en *endptr (y devuelve 0). En particular, si *nptr no es '\0' pero **endptr es '\0' 
+                                        cuando la función retorna, la cadena al completo es válida.
+                                        */
+                                        
+                                        //Implemetar logica para colocar la ficha
+                                        
+                                            //Cuidado controlar que si no se puede colocar
+                                            //en la posicion seleccionada retornar error 
+                                            //del else
+
+                                    }
+                                    else{
+                                        bzero(buffer,sizeof(buffer));
+                                        sprintf(buffer, "-Err. Posicion no valida");
+                                        printf("<%i>: %s\n",i, buffer);
+                                        send(i,buffer,sizeof(buffer),0);  
+                                    }
+
+                                    
+
+
+                                }
+                                else if(strcmp(orden,"INICIAR-PARTIDA") == 0){ 
+                                    
+                                    //Implemetar logica para inicar partida
+
+
+                                }
                                 else{
                                     
-                                    sprintf(identificador,"<%d>: %s",i,buffer);
+                                    //Cualquier otro mensaje genera error
+
                                     bzero(buffer,sizeof(buffer));
+                                    sprintf(buffer, "-Err. Orden no valida");
+                                    printf("<%i>: %s\n",i, buffer);
+                                    send(i,buffer,sizeof(buffer),0);
 
-                                    strcpy(buffer,identificador);
-
-                                    printf("%s\n", buffer);
-
-                                    for(j=0; j<numClientes; j++)
-                                        if(arrayClientes[j] != i)//Al que manda el mensaje no se lee envia salir xd
-                                            send(arrayClientes[j],buffer,sizeof(buffer),0);
-
-                                    
                                 }
 
 
@@ -382,19 +433,19 @@ void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClie
 
 }
 
-/**
-
 void manejador (int signum){
 
-    printf("\nSe ha recibido la señal sigint\n");
+    printf("\nSe ha recibido la señal SIGINT\n");
+    printf("APAGANDO EL SISTEMA\n");
     signal(SIGINT,manejador);
     
-    //Implementar lo que se desee realizar cuando ocurra la excepción de ctrl+c en el servidor
+    //Se activa la flag y en el while del main se cierra el server
+    //Si no habría que poner muchas variables globales para poder pasarlas
+    //al manejador.
+    manejador_flag = 1;
 
-    //seria como salir cliente o algo  así
 }
 
-*/
 
 int login(char user[], char pass[]){
 
