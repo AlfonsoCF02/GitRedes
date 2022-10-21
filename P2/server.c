@@ -235,43 +235,61 @@ int main ( )
                                 }
                                 else if(strcmp(orden,"USUARIO") == 0){ // Cliente manda USUARIO
                                     
-                                    //Almacenamos el usuario en user_tmp
-                                    sprintf(usuarios[pv].user, strtok(NULL, " "));
+                                    if(usuarios[pv].logeado != 0){  //Si no esta logueado ya
                                     
-                                    if(existe_username(usuarios[pv].user) == 0){
-                                        bzero(buffer,sizeof(buffer));
-                                        sprintf(buffer, "+Ok. Usuario correcto");
-                                        printf("<%i>: %s\n",i, buffer);
-                                        send(i,buffer,sizeof(buffer),0);
+                                        sprintf(usuarios[pv].user, strtok(NULL, " "));
+                                    
+                                        if(existe_username(usuarios[pv].user) == 0){
+                                            bzero(buffer,sizeof(buffer));
+                                            sprintf(buffer, "+Ok. Usuario correcto");
+                                            printf("<%i>: %s\n",i, buffer);
+                                            send(i,buffer,sizeof(buffer),0);
+                                        }
+                                        else{
+                                            bzero(buffer,sizeof(buffer));
+                                            sprintf(buffer, "-Err. Usuario incorrecto");
+                                            printf("<%i>: %s\n",i, buffer);
+                                            send(i,buffer,sizeof(buffer),0);
+                                        }
                                     }
                                     else{
                                         bzero(buffer,sizeof(buffer));
-                                        sprintf(buffer, "-Err. Usuario incorrecto");
+                                        sprintf(buffer, "-Err. Usuario ya logueado");
                                         printf("<%i>: %s\n",i, buffer);
                                         send(i,buffer,sizeof(buffer),0);
-                                    }
+                                    }                                    
 
                                 }
                                 else if(strcmp(orden,"PASSWORD") == 0){ // Cliente manda USUARIO
                                     
-                                    //Almacenamos el pasa del usuario
-                                    sprintf(usuarios[pv].pass, strtok(NULL, " "));
+
+                                    if(usuarios[pv].logeado != 0){  //Si no esta logueado ya
                                     
-                                    if(login(usuarios[pv].user, usuarios[pv].pass) == 0){
-                                        bzero(buffer,sizeof(buffer));
-                                        sprintf(buffer, "+Ok. Usuario validado");
-                                        printf("<%i>: %s\n",i, buffer);
-                                        send(i,buffer,sizeof(buffer),0);
+                                        //Almacenamos el pasa del usuario
+                                        sprintf(usuarios[pv].pass, strtok(NULL, " "));
+                                        
+                                        if(login(usuarios[pv].user, usuarios[pv].pass) == 0){
+                                            bzero(buffer,sizeof(buffer));
+                                            sprintf(buffer, "+Ok. Usuario validado");
+                                            printf("<%i>: %s\n",i, buffer);
+                                            send(i,buffer,sizeof(buffer),0);
 
-                                        usuarios[pv].logeado = 0;
+                                            usuarios[pv].logeado = 0;
 
+                                        }
+                                        else{
+                                            bzero(buffer,sizeof(buffer));
+                                            sprintf(buffer, "-Err. Error en la validación");
+                                            printf("<%i>: %s\n",i, buffer);
+                                            send(i,buffer,sizeof(buffer),0);
+                                        }
                                     }
                                     else{
                                         bzero(buffer,sizeof(buffer));
-                                        sprintf(buffer, "-Err. Error en la validación");
+                                        sprintf(buffer, "-Err. Usuario ya logueado");
                                         printf("<%i>: %s\n",i, buffer);
                                         send(i,buffer,sizeof(buffer),0);
-                                    }
+                                    }                   
 
                                 }
                                 else if(strcmp(orden,"REGISTRO") == 0){ // Cliente manda REGISTRO
