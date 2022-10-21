@@ -27,6 +27,8 @@ void comprobarEmpate(){
 }
 
 void comprobarVictoriaX(int pos1, int pos2){
+
+//----------VERTICAL------------------
 int count=0;
       for(int j=0; j<MAX_COLUMN; j++){
          if(A[pos1][j]=='X'){
@@ -42,6 +44,8 @@ int count=0;
          }
       }
 
+//-------------HORIZONTAL------------------
+
 count=0;
    for(int i=0; i<MAX_LINE; i++){
          if(A[i][pos2]=='X'){
@@ -54,22 +58,50 @@ count=0;
          }
       }
 
+//-----------DIAGONAL(ArribaAbajo)-----------
 
-int x=pos1;
-int y=pos2;
+int x1=pos1;
+int y1=pos2;
 printf("X antes de bucle:%d\n", x);
    while((y>0&&y<6)&&(x>1&&x<6)){
-      x--;
-      y--;
+      x1--;
+      y1--;
    }
 int diagonalCount=0;
-int i1=x;
+int i1=x1;
 int j1=0;
    for(i1, j1; (i1>=0&&i1<MAX_LINE)&&(j1<=MAX_COLUMN); i1++, j1++){
          if(A[i1][j1]=='X'){
             diagonalCount++;
          }
          if(A[i1][j1]=='O'){
+            diagonalCount=0;
+         }
+         if(diagonalCount==4){
+            ganar=1;
+            printf("Jugador1 ha ganado\n");
+            exit(-1);
+         }
+   }
+
+
+//---------DIAGONAL(AbajoArriba)---------------
+
+int x2=pos1;
+int y2=pos2;
+printf("X antes de bucle:%d\n", x);
+   while((y>0&&y<6)&&(x>1&&x<6)){
+      x2++;
+      y2++;
+   }
+int diagonalCount=0;
+int i2=x2;
+int j2=0;
+   for(i2, j2; (i2>=0&&i2<MAX_LINE)&&(j2<=MAX_COLUMN); i2--, j2--){
+         if(A[i2][j2]=='X'){
+            diagonalCount++;
+         }
+         if(A[i2][j2]=='O'){
             diagonalCount=0;
          }
          if(diagonalCount==4){
