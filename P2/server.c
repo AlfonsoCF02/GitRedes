@@ -146,8 +146,12 @@ int main ( )
                                 if(numClientes < MAX_CLIENTS){
 
                                     usuarios[numClientes].sd = new_sd; //A quien hay que mandar
+
+                                    //No se puede en la estructura, quitamos valores basura
+                                    //Por si acaso alguno es 0
+                                    inicialzar_usuario(usuarios, numClientes);
+
                                     numClientes++;
-                                    printf("<%i>: Insertado %d en %d, nsd %d\n",new_sd, usuarios[numClientes-1].sd, numClientes-1, new_sd);
                                     FD_SET(new_sd,&readfds);
                                 
                                     strcpy(buffer, "+0k. Usuario conectado\n");
@@ -232,9 +236,9 @@ int main ( )
                                 else if(strcmp(orden,"USUARIO") == 0){ // Cliente manda USUARIO
                                     
                                     //Almacenamos el usuario en user_tmp
-                                    sprintf(user_tmp, strtok(NULL, " "));
+                                    sprintf(usuarios[pv].user, strtok(NULL, " "));
                                     
-                                    if(existe_username(user_tmp) == 0){
+                                    if(existe_username(usuarios[pv].user) == 0){
                                         bzero(buffer,sizeof(buffer));
                                         sprintf(buffer, "+Ok. Usuario correcto");
                                         printf("<%i>: %s\n",i, buffer);
@@ -248,17 +252,19 @@ int main ( )
                                     }
 
                                 }
-                                else if(strcmp(orden,"LOGIN") == 0){ // Cliente manda USUARIO
+                                else if(strcmp(orden,"PASSWORD") == 0){ // Cliente manda USUARIO
                                     
-                                    //Almacenamos los datos del usuario
-                                    sprintf(user_tmp, strtok(NULL, " "));
-                                    sprintf(pass_tmp, strtok(NULL, " "));
+                                    //Almacenamos el pasa del usuario
+                                    sprintf(usuarios[pv].pass, strtok(NULL, " "));
                                     
-                                    if(login(user_tmp, pass_tmp) == 0){
+                                    if(login(usuarios[pv].user, usuarios[pv].pass) == 0){
                                         bzero(buffer,sizeof(buffer));
                                         sprintf(buffer, "+Ok. Usuario validado");
                                         printf("<%i>: %s\n",i, buffer);
                                         send(i,buffer,sizeof(buffer),0);
+
+                                        usuarios[pv].logeado = 0;
+
                                     }
                                     else{
                                         bzero(buffer,sizeof(buffer));
@@ -276,12 +282,12 @@ int main ( )
                                     sprintf(aux, strtok(NULL, " "));
                                     if( strcmp(aux,"-u") == 0 ){
                                         //Almacenamos el user
-                                        sprintf(user_tmp, strtok(NULL, " "));
+                                        sprintf(usuarios[pv].user, strtok(NULL, " "));
                                         sprintf(aux, strtok(NULL, " "));
                                         if(strcmp(aux,"-p") == 0){
                                             //Almacenamos la pass
-                                            sprintf(pass_tmp, strtok(NULL, " "));
-                                            if(registro(user_tmp, pass_tmp) == 0){
+                                            sprintf(usuarios[pv].pass, strtok(NULL, " "));
+                                            if(registro(usuarios[pv].user, usuarios[pv].pass) == 0){
                                                 //Devolver ok usuaruio correcto
                                                 bzero(buffer,sizeof(buffer));
                                                 sprintf(buffer, "+Ok. Usuario registrado");
@@ -547,6 +553,11 @@ int existe_username(char user[]){
     return 1;
 } 
 
+void inicialzar_usuario(user usuarios[], int numClientes){
+    usuarios[numClientes].logeado = 1;
+    usuarios[numClientes].enespera = 1;
+    usuarios[numClientes].turno = -1;
+}
 
 int find_pv(user usuarios[MAX_CLIENTS], int sd_buscado){
 
