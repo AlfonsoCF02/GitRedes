@@ -12,7 +12,7 @@ typedef struct user{
     int sd;
     char user[MSG_SIZE];
     char pass[MSG_SIZE];
-    int logeado; // 0 si - 1 no
+    int logueado; // 0 si - 1 no
     int enespera; // 0 -> no
     int turno; // 0 -> no
 }user;

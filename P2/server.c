@@ -234,7 +234,7 @@ int main ( )
                                 }
                                 else if(strcmp(orden,"USUARIO") == 0){ // Cliente manda USUARIO
                                     
-                                    if(usuarios[pv].logeado != 0){  //Si no esta logueado ya
+                                    if(usuarios[pv].logueado != 0){  //Si no esta logueado ya
                                     
                                         //Almacenamos el username
                                         sprintf(usuarios[pv].user, strtok(NULL, " "));
@@ -262,18 +262,17 @@ int main ( )
                                 }
                                 else if(strcmp(orden,"PASSWORD") == 0){ // Cliente manda PASSWORD
                                     
-                                    if(usuarios[pv].logeado != 0){  //Si no esta logueado ya
+                                    if(usuarios[pv].logueado != 0){  //Si no esta logueado ya
                                     
                                         //Almacenamos el pass del usuario
                                         sprintf(usuarios[pv].pass, strtok(NULL, " "));
-                                        printf("<%i>: Usuario: %s Pass: %s \n",i, usuarios[pv].user,usuarios[pv].pass);
                                         if(login(usuarios[pv].user, usuarios[pv].pass) == 0){
                                             bzero(buffer,sizeof(buffer));
                                             sprintf(buffer, "+Ok. Usuario validado");
                                             printf("<%i>: %s\n",i, buffer);
                                             send(i,buffer,sizeof(buffer),0);
 
-                                            usuarios[pv].logeado = 0;
+                                            usuarios[pv].logueado = 0;
 
                                         }
                                         else{
@@ -413,10 +412,22 @@ int main ( )
 }
 
 void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios[]){
-    
+
     char buffer[250];
     int j;
-    
+
+/*      PARA DEPURAR --- BORRAR ANTES DE ENTREGAR
+
+       //Imprimir antes de borrar
+       printf("ANTES DE SALIR \n");
+    for (j = 0; j < *numClientes; j++){
+        printf("Pos: %d, SD: %d, User: %s, Pass: %s, logueado: %d, espera: %d, turno: %d\n",
+        j,usuarios[j].sd,usuarios[j].user,usuarios[j].pass,
+        usuarios[j].logueado,usuarios[j].enespera,usuarios[j].turno);
+    }
+
+*/
+
     close(socket);
     FD_CLR(socket,readfds);
     
@@ -426,10 +437,25 @@ void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios
             break;
     for (; j < (*numClientes) - 1; j++)
         (usuarios[j] = usuarios[j+1]);
-    
+
+    //Al moverlos todos 1 posicion adelante el ultimo hay que borrarlo
+    inicialzar_usuario(usuarios, *numClientes);
+
     (*numClientes)--;
 
     printf("<%i>: Desconectado\n",socket);
+
+/*      PARA DEPURAR --- BORRAR ANTES DE ENTREGAR
+
+    //Imprimir antes de borrar
+    printf("\nDESPUES DE SALIR ");
+    for (j = 0; j < *numClientes; j++){
+        printf("Pos: %d, SD: %d, User: %s, Pass: %s, logueado: %d, espera: %d, turno: %d\n",
+        j,usuarios[j].sd,usuarios[j].user,usuarios[j].pass,
+        usuarios[j].logueado,usuarios[j].enespera,usuarios[j].turno);
+    }
+
+*/
 
 }
 
@@ -564,7 +590,9 @@ int existe_username(char user[]){
 } 
 
 void inicialzar_usuario(user usuarios[], int numClientes){
-    usuarios[numClientes].logeado = 1;
+    sprintf(usuarios[numClientes].user, "");
+    sprintf(usuarios[numClientes].pass, "");
+    usuarios[numClientes].logueado = 1;
     usuarios[numClientes].enespera = 1;
     usuarios[numClientes].turno = -1;
 }
