@@ -225,8 +225,7 @@ int main ( )
                                 char orden[MSG_SIZE];
                                 sprintf(orden, strtok(buffer, " "));
 
-                                char user_tmp[MSG_SIZE];
-                                char pass_tmp[MSG_SIZE];
+                                //Procesamos la orden recibida
 
                                 if(strcmp(buffer,"SALIR") == 0){  // Cliente qiuere salir
                                     
@@ -237,6 +236,7 @@ int main ( )
                                     
                                     if(usuarios[pv].logeado != 0){  //Si no esta logueado ya
                                     
+                                        //Almacenamos el username
                                         sprintf(usuarios[pv].user, strtok(NULL, " "));
                                     
                                         if(existe_username(usuarios[pv].user) == 0){
@@ -260,14 +260,13 @@ int main ( )
                                     }                                    
 
                                 }
-                                else if(strcmp(orden,"PASSWORD") == 0){ // Cliente manda USUARIO
+                                else if(strcmp(orden,"PASSWORD") == 0){ // Cliente manda PASSWORD
                                     
-
                                     if(usuarios[pv].logeado != 0){  //Si no esta logueado ya
                                     
-                                        //Almacenamos el pasa del usuario
+                                        //Almacenamos el pass del usuario
                                         sprintf(usuarios[pv].pass, strtok(NULL, " "));
-                                        
+                                        printf("<%i>: Usuario: %s Pass: %s \n",i, usuarios[pv].user,usuarios[pv].pass);
                                         if(login(usuarios[pv].user, usuarios[pv].pass) == 0){
                                             bzero(buffer,sizeof(buffer));
                                             sprintf(buffer, "+Ok. Usuario validado");
@@ -426,16 +425,9 @@ void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios
         if (usuarios[j].sd == socket)
             break;
     for (; j < (*numClientes) - 1; j++)
-        (usuarios[j].sd = usuarios[j+1].sd);
+        (usuarios[j] = usuarios[j+1]);
     
     (*numClientes)--;
-    
-    bzero(buffer,sizeof(buffer));
-    sprintf(buffer,"Desconexión del cliente: %d\n",socket);
-    
-    for(j=0; j<(*numClientes); j++)
-        if(usuarios[j].sd != socket)
-            send(usuarios[j].sd,buffer,sizeof(buffer),0);
 
     printf("<%i>: Desconectado\n",socket);
 
@@ -578,7 +570,6 @@ void inicialzar_usuario(user usuarios[], int numClientes){
 }
 
 int find_pv(user usuarios[MAX_CLIENTS], int sd_buscado){
-
 
     for(int i = 0; i<MAX_CLIENTS; i++){
         if(usuarios[i].sd == sd_buscado){
