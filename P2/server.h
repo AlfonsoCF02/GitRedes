@@ -12,16 +12,17 @@ typedef struct user{
     int sd;
     char user[MSG_SIZE];
     char pass[MSG_SIZE];
-    int logueado; // 0 si - 1 no
-    int enespera; // 0 -> no
-    int turno; // 0 -> no
+    int logueado; // 1 -> no
+    int enespera; // 1 -> no
+    int enjuego; // 1-> no
+    int turno; // 1 -> no
 }user;
 
 typedef struct partida{
     int sd1;
     int sd2;
     char A[6][7];
-    int enjuego; // 0 -> no
+    int turno; // socket con turno
 }partida;
 
     //Bandera para el manejador de señal
@@ -41,6 +42,7 @@ int registro(char user[], char pass[]);
 int existe_username(char user[]);
 
     //Manejo estructura usuarios
+void inicialzar_estructuras(user usuarios[], partida partidas[], int vectorEspera[]);
 void inicialzar_usuario(user usuarios[], int numClientes);
 int find_pv(user usuarios[MAX_CLIENTS], int sd_buscado);
 

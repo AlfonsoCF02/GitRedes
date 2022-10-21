@@ -32,6 +32,8 @@ int main ( )
    	int salida;
    	//int arrayClientes[MAX_CLIENTS];
     int numClientes = 0;
+    int numEspera = 0;
+    int enjuego = 0;
    	//contadores
     int i,j,k;
 	int recibidos;
@@ -43,6 +45,9 @@ int main ( )
     //Vectores de usuarios y partidas
     user usuarios[MAX_CLIENTS];
     partida partidas[MAX_P_SIMULT];
+    int vectorEspera[MAX_CLIENTS];
+
+    inicialzar_estructuras(usuarios, partidas, vectorEspera);
 
 	/* --------------------------------------------------
 		Se abre el socket 
@@ -114,7 +119,7 @@ int main ( )
 
                 close(sd);
 
-                printf("APAGANDO COMPLETADO\n");
+                printf("APAGADO COMPLETADO\n");
 
                 exit(-1);              
                                 
@@ -188,7 +193,7 @@ int main ( )
                                     FD_CLR(usuarios[j].sd,&readfds);
                                 }
 
-                                printf("APAGANDO COMPLETADO\n");
+                                printf("APAGADO COMPLETADO\n");
 
                                 close(sd);
                                 exit(-1);
@@ -258,6 +263,8 @@ int main ( )
                                     
                                     if(usuarios[pv].logueado != 0){  //Si no esta logueado ya
                                     
+                                        //ARREGLAR. Un usuario logueado se puede volver a loguear en otra terminal
+
                                         //Almacenamos el pass del usuario
                                         sprintf(usuarios[pv].pass, strtok(NULL, " "));
 
@@ -343,9 +350,57 @@ int main ( )
                                 }
                                 else if(strcmp(orden,"INICIAR-PARTIDA") == 0){ 
                                     
-                                    //Implemetar logica para inicar partida
+                                    if(usuarios[pv].logueado == 0){ //Si el user esta logueado
 
+                                        if(enjuego < MAX_P_SIMULT){ //Comprobamos si se puede iniciar otra partida
+                                            
+                                            if(usuarios[pv].enjuego == 1){ //No esta en juego
 
+                                                if(usuarios[pv].enespera == 1){ //No esta en espera
+
+                                                    usuarios[pv].enespera = 0; //Se pone en espera
+
+                                                    vectorEspera[numEspera] = i; //Se añade a listaespera
+                                                    numEspera++;
+
+                                                    //Si hay dos personas en espera
+                                                    if((vectorEspera[0] != -1) && (vectorEspera[1] != -1)){
+
+                                                        //Se crea la partida
+                                                        partidas[enjuego].sd1 = vectorEspera[0];
+                                                        partidas[enjuego].sd2 = vectorEspera[1];
+                                                        partidas[enjuego].turno = vectorEspera[0];
+printf("VE - SD1: %d, sd2: %d", partidas[enjuego].sd1, partidas[enjuego].sd2);
+                                                        enjuego++;
+
+                                                        usuarios[find_pv(usuarios, vectorEspera[0])].enjuego = 1;
+                                                        usuarios[find_pv(usuarios, vectorEspera[1])].enjuego = 1;
+printf("finpv - todo: %d, finvp: %d", usuarios[find_pv(usuarios, vectorEspera[0])].enjuego, find_pv(usuarios, vectorEspera[0]));
+                                                        usuarios[find_pv(usuarios, vectorEspera[0])].enespera = 0;
+                                                        usuarios[find_pv(usuarios, vectorEspera[1])].enespera = 0;
+
+                                                    }
+                                                    else{
+                                                        enviar_mensaje(i, "+Ok. Esperando jugadores");
+                                                    }
+                                                
+
+                                                }
+                                                else{
+                                                    enviar_mensaje(i, "-Err. Ya esta en espera");
+                                                }
+                                            }
+                                            else{
+                                                enviar_mensaje(i, "-Err. Usted ya esta jugando una pertida");
+                                            }
+                                        }
+                                        else{
+                                            enviar_mensaje(i, "-Err. Max de partidas alcanzado, intentelo mas tarde");
+                                        } 
+                                    }
+                                    else{
+                                        enviar_mensaje(i, "-Err. debe loguearse para buscar partida");
+                                    }
                                 }
                                 else{
                                     
@@ -559,6 +614,7 @@ void inicialzar_usuario(user usuarios[], int numClientes){
     sprintf(usuarios[numClientes].pass, "");
     usuarios[numClientes].logueado = 1;
     usuarios[numClientes].enespera = 1;
+    usuarios[numClientes].enjuego = 1;
     usuarios[numClientes].turno = -1;
 }
 
@@ -589,5 +645,36 @@ void enviar_mensaje(int socket_destino, char mensaje[MSG_SIZE]){
         buffer[strlen(buffer)-1] = '\0';
     }
     printf("<%i>: %s\n", socket_destino, buffer);
+
+}
+
+
+void inicialzar_estructuras(user usuarios[], partida partidas[], int vectorEspera[]){
+
+    int z;
+
+    for(z=0 ; z< MAX_CLIENTS; z++){
+        sprintf(usuarios[z].user, "");
+        sprintf(usuarios[z].pass, "");
+        usuarios[z].logueado = 1;
+        usuarios[z].enespera = 1;
+        usuarios[z].enjuego = 1;
+        usuarios[z].turno = -1;
+    }
+
+    z = 0;
+
+    for(z=0 ; z< MAX_CLIENTS; z++){
+        partidas[z].sd1 = -1;
+        partidas[z].sd2 = -1;
+        partidas[z].turno = -1;
+        //La matriz ya vemos luego
+    }
+    
+    z = 0;
+
+    for(z=0 ; z< MAX_CLIENTS; z++){
+        vectorEspera[z] = -1;
+    }
 
 }
