@@ -32,6 +32,7 @@ void manejador(int signum);
     //Funcionalidades del servidor
 
 void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios[]);
+void enviar_mensaje(int socket_destino, char mensaje[MSG_SIZE]);
 
     //Manejo BBDD
 

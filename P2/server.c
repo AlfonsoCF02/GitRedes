@@ -107,14 +107,15 @@ int main ( )
             if(manejador_flag == 1){
                              
                 for (j = 0; j < numClientes; j++){
-                    bzero(buffer, sizeof(buffer));
-                    strcpy(buffer,"Desconexión servidor\n"); 
-                    send(usuarios[j].sd,buffer , sizeof(buffer),0);
+                    enviar_mensaje(usuarios[j].sd, "Desconexión servidor\n");
                     close(usuarios[j].sd);
                     FD_CLR(usuarios[j].sd,&readfds);
                 }
 
                 close(sd);
+
+                printf("APAGANDO COMPLETADO\n");
+
                 exit(-1);              
                                 
             }
@@ -154,18 +155,12 @@ int main ( )
                                     numClientes++;
                                     FD_SET(new_sd,&readfds);
                                 
-                                    strcpy(buffer, "+0k. Usuario conectado\n");
-                                
-                                    send(new_sd,buffer,sizeof(buffer),0);
-
-                                    printf("<%i>: Conectado\n",new_sd);
+                                    enviar_mensaje(new_sd, "+0k. Usuario conectado\n");
                                 
                                 }
                                 else
                                 {   //Si hay muchos a la puta calle
-                                    bzero(buffer,sizeof(buffer));
-                                    strcpy(buffer,"Demasiados clientes conectados\n");
-                                    send(new_sd,buffer,sizeof(buffer),0);
+                                    enviar_mensaje(new_sd, "Demasiados clientes conectados\n");
                                     close(new_sd);
                                 }
                                 
@@ -183,14 +178,17 @@ int main ( )
                             
                             //Controlar si se ha introducido "SALIR", cerrando todos los sockets y finalmente saliendo del servidor. (implementar)
                             if(strcmp(buffer,"SALIR\n") == 0){
-                             
+
+                                printf("APAGANDO EL SISTEMA\n");
+                                printf("Deconectando usuarios: \n");
+
                                 for (j = 0; j < numClientes; j++){
-						            bzero(buffer, sizeof(buffer));
-						            strcpy(buffer,"Desconexión servidor\n"); 
-                                    send(usuarios[j].sd,buffer , sizeof(buffer),0);
+						            enviar_mensaje(usuarios[j].sd, "Desconexión servidor\n");
                                     close(usuarios[j].sd);
                                     FD_CLR(usuarios[j].sd,&readfds);
                                 }
+
+                                printf("APAGANDO COMPLETADO\n");
 
                                 close(sd);
                                 exit(-1);
@@ -214,8 +212,10 @@ int main ( )
                                     printf("<%i>: Error, no encontrado en el vector\n",i);
                                 }
 
-                                //Quitamos el \0 del mensaje recibido
-                                buffer[strlen(buffer) - 1] = '\0';
+                                //Quitamos el \n del mensaje recibido
+                                if(buffer[strlen(buffer)-1]=='\n'){
+                                    buffer[strlen(buffer)-1] = '\0';
+                                }
 
                                 //Mostramos el mensaje recibido
                                 printf("<%i>: %s\n",i, buffer);
@@ -240,23 +240,17 @@ int main ( )
                                         sprintf(usuarios[pv].user, strtok(NULL, " "));
                                     
                                         if(existe_username(usuarios[pv].user) == 0){
-                                            bzero(buffer,sizeof(buffer));
-                                            sprintf(buffer, "+Ok. Usuario correcto");
-                                            printf("<%i>: %s\n",i, buffer);
-                                            send(i,buffer,sizeof(buffer),0);
+
+                                            enviar_mensaje(i, "+Ok. Usuario correcto");
+                                            
                                         }
                                         else{
-                                            bzero(buffer,sizeof(buffer));
-                                            sprintf(buffer, "-Err. Usuario incorrecto");
-                                            printf("<%i>: %s\n",i, buffer);
-                                            send(i,buffer,sizeof(buffer),0);
+                                            enviar_mensaje(i, "-Err. Usuario incorrecto");
                                         }
                                     }
                                     else{
-                                        bzero(buffer,sizeof(buffer));
-                                        sprintf(buffer, "-Err. Usuario ya logueado");
-                                        printf("<%i>: %s\n",i, buffer);
-                                        send(i,buffer,sizeof(buffer),0);
+
+                                        enviar_mensaje(i, "-Err. Usuario ya logueado");
                                     }                                    
 
                                 }
@@ -266,27 +260,21 @@ int main ( )
                                     
                                         //Almacenamos el pass del usuario
                                         sprintf(usuarios[pv].pass, strtok(NULL, " "));
-                                        if(login(usuarios[pv].user, usuarios[pv].pass) == 0){
-                                            bzero(buffer,sizeof(buffer));
-                                            sprintf(buffer, "+Ok. Usuario validado");
-                                            printf("<%i>: %s\n",i, buffer);
-                                            send(i,buffer,sizeof(buffer),0);
 
+                                        if(login(usuarios[pv].user, usuarios[pv].pass) == 0){
+
+                                            enviar_mensaje(i, "+Ok. Usuario validado");
+
+                                            //Se activa la bandera de logueado
                                             usuarios[pv].logueado = 0;
 
                                         }
                                         else{
-                                            bzero(buffer,sizeof(buffer));
-                                            sprintf(buffer, "-Err. Error en la validación");
-                                            printf("<%i>: %s\n",i, buffer);
-                                            send(i,buffer,sizeof(buffer),0);
+                                            enviar_mensaje(i, "-Err. Error en la validación");
                                         }
                                     }
                                     else{
-                                        bzero(buffer,sizeof(buffer));
-                                        sprintf(buffer, "-Err. Usuario ya logueado");
-                                        printf("<%i>: %s\n",i, buffer);
-                                        send(i,buffer,sizeof(buffer),0);
+                                        enviar_mensaje(i, "-Err. Usuario ya logueado");
                                     }                   
 
                                 }
@@ -304,33 +292,20 @@ int main ( )
                                             //Almacenamos la pass
                                             sprintf(usuarios[pv].pass, strtok(NULL, " "));
                                             if(registro(usuarios[pv].user, usuarios[pv].pass) == 0){
-                                                //Devolver ok usuaruio correcto
-                                                bzero(buffer,sizeof(buffer));
-                                                sprintf(buffer, "+Ok. Usuario registrado");
-                                                printf("<%i>: %s\n",i, buffer);
-                                                send(i,buffer,sizeof(buffer),0);
+
+                                                enviar_mensaje(i, "+Ok. Usuario registrado");
+
                                             }
                                             else{
-                                                
-                                                bzero(buffer,sizeof(buffer));
-                                                sprintf(buffer, "-Err. El nombre de usuario ya existe");
-                                                printf("<%i>: %s\n",i, buffer);
-                                                send(i,buffer,sizeof(buffer),0);
-
+                                                enviar_mensaje(i, "-Err. El nombre de usuario ya existe");
                                             }
                                         }
                                         else{
-                                            bzero(buffer,sizeof(buffer));
-                                            sprintf(buffer, "-Err. El formato incorrecto (-p)");
-                                            printf("<%i>: %s\n",i, buffer);
-                                            send(i,buffer,sizeof(buffer),0);
+                                            enviar_mensaje(i, "-Err. El formato incorrecto (-p)");
                                         }
                                     }
                                     else{
-                                        bzero(buffer,sizeof(buffer));
-                                        sprintf(buffer, "-Err. El formato incorrecto (-u)");
-                                        printf("<%i>: %s\n",i, buffer);
-                                        send(i,buffer,sizeof(buffer),0);
+                                        enviar_mensaje(i, "-Err. El formato incorrecto (-u)");
                                     }
 
                                 }
@@ -363,15 +338,8 @@ int main ( )
 
                                     }
                                     else{
-                                        bzero(buffer,sizeof(buffer));
-                                        sprintf(buffer, "-Err. Posicion no valida");
-                                        printf("<%i>: %s\n",i, buffer);
-                                        send(i,buffer,sizeof(buffer),0);  
+                                        enviar_mensaje(i, "-Err. Posicion no valida");
                                     }
-
-                                    
-
-
                                 }
                                 else if(strcmp(orden,"INICIAR-PARTIDA") == 0){ 
                                     
@@ -383,10 +351,7 @@ int main ( )
                                     
                                     //Cualquier otro mensaje genera error
 
-                                    bzero(buffer,sizeof(buffer));
-                                    sprintf(buffer, "-Err. Orden no valida");
-                                    printf("<%i>: %s\n",i, buffer);
-                                    send(i,buffer,sizeof(buffer),0);
+                                    enviar_mensaje(i, "-Err. Orden no valida");
 
                                 }
 
@@ -463,7 +428,7 @@ void manejador (int signum){
 
     printf("\nSe ha recibido la señal SIGINT\n");
     printf("APAGANDO EL SISTEMA\n");
-    signal(SIGINT,manejador);
+    printf("Deconectando usuarios: \n");
     
     //Se activa la flag y en el while del main se cierra el server
     //Si no habría que poner muchas variables globales para poder pasarlas
@@ -606,5 +571,23 @@ int find_pv(user usuarios[MAX_CLIENTS], int sd_buscado){
     }
 
     return -1;
+
+}
+
+void enviar_mensaje(int socket_destino, char mensaje[MSG_SIZE]){
+
+    char buffer[MSG_SIZE];
+
+    bzero(buffer, sizeof(buffer));
+    sprintf(buffer, mensaje);
+    send(socket_destino, buffer, sizeof(buffer), 0);
+
+    //Mostramos por terminal el mensaje enviado
+
+    //Si tiene \n se la  (para que salga mas limpio en la terminal)
+    if(buffer[strlen(buffer)-1]=='\n'){
+        buffer[strlen(buffer)-1] = '\0';
+    }
+    printf("<%i>: %s\n", socket_destino, buffer);
 
 }
