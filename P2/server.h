@@ -31,7 +31,7 @@ void manejador(int signum);
 
     //Funcionalidades del servidor
 
-void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]);
+void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios[]);
 
     //Manejo BBDD
 
@@ -40,7 +40,7 @@ int registro(char user[], char pass[]);
 int existe_username(char user[]);
 
     //Manejo estructura usuarios
-    
-int find_user(user usuarios[MAX_CLIENTS], int sd_buscado);
+
+int find_pv(user usuarios[MAX_CLIENTS], int sd_buscado);
 
 #endif

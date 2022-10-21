@@ -30,13 +30,15 @@ int main ( )
 	socklen_t from_len;
     fd_set readfds, auxfds;
    	int salida;
-   	int arrayClientes[MAX_CLIENTS];
+   	//int arrayClientes[MAX_CLIENTS];
     int numClientes = 0;
    	//contadores
     int i,j,k;
 	int recibidos;
    	char identificador[MSG_SIZE];
     int on, ret;
+
+    int pv;
 
     //Vectores de usuarios y partidas
     user usuarios[MAX_CLIENTS];
@@ -107,9 +109,9 @@ int main ( )
                 for (j = 0; j < numClientes; j++){
                     bzero(buffer, sizeof(buffer));
                     strcpy(buffer,"Desconexión servidor\n"); 
-                    send(arrayClientes[j],buffer , sizeof(buffer),0);
-                    close(arrayClientes[j]);
-                    FD_CLR(arrayClientes[j],&readfds);
+                    send(usuarios[j].sd,buffer , sizeof(buffer),0);
+                    close(usuarios[j].sd);
+                    FD_CLR(usuarios[j].sd,&readfds);
                 }
 
                 close(sd);
@@ -143,8 +145,9 @@ int main ( )
                             {
                                 if(numClientes < MAX_CLIENTS){
 
-                                    arrayClientes[numClientes] = new_sd; //A quien hay que mandar
+                                    usuarios[numClientes].sd = new_sd; //A quien hay que mandar
                                     numClientes++;
+                                    printf("<%i>: Insertado %d en %d, nsd %d\n",new_sd, usuarios[numClientes-1].sd, numClientes-1, new_sd);
                                     FD_SET(new_sd,&readfds);
                                 
                                     strcpy(buffer, "+0k. Usuario conectado\n");
@@ -180,9 +183,9 @@ int main ( )
                                 for (j = 0; j < numClientes; j++){
 						            bzero(buffer, sizeof(buffer));
 						            strcpy(buffer,"Desconexión servidor\n"); 
-                                    send(arrayClientes[j],buffer , sizeof(buffer),0);
-                                    close(arrayClientes[j]);
-                                    FD_CLR(arrayClientes[j],&readfds);
+                                    send(usuarios[j].sd,buffer , sizeof(buffer),0);
+                                    close(usuarios[j].sd);
+                                    FD_CLR(usuarios[j].sd,&readfds);
                                 }
 
                                 close(sd);
@@ -201,6 +204,12 @@ int main ( )
                             
                             if(recibidos > 0){
 
+                                //Vemos en que posicion del vector esta el socket
+                                pv = find_pv(usuarios, i);
+                                if(pv == -1){
+                                    printf("<%i>: Error, no encontrado en el vector\n",i);
+                                }
+
                                 //Quitamos el \0 del mensaje recibido
                                 buffer[strlen(buffer) - 1] = '\0';
 
@@ -217,7 +226,7 @@ int main ( )
 
                                 if(strcmp(buffer,"SALIR") == 0){  // Cliente qiuere salir
                                     
-                                    salirCliente(i,&readfds,&numClientes,arrayClientes);
+                                    salirCliente(i,&readfds,&numClientes,usuarios);
                                     
                                 }
                                 else if(strcmp(orden,"USUARIO") == 0){ // Cliente manda USUARIO
@@ -367,7 +376,7 @@ int main ( )
                                 // de forma abructa
                             {
                                 //Eliminar ese socket
-                                salirCliente(i,&readfds,&numClientes,arrayClientes);
+                                salirCliente(i,&readfds,&numClientes,usuarios);
                             }
                         }
                     }
@@ -380,7 +389,7 @@ int main ( )
 	
 }
 
-void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]){
+void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios[]){
     
     char buffer[250];
     int j;
@@ -390,10 +399,10 @@ void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClie
     
     //Re-estructurar el array de clientes
     for (j = 0; j < (*numClientes) - 1; j++)
-        if (arrayClientes[j] == socket)
+        if (usuarios[j].sd == socket)
             break;
     for (; j < (*numClientes) - 1; j++)
-        (arrayClientes[j] = arrayClientes[j+1]);
+        (usuarios[j].sd = usuarios[j+1].sd);
     
     (*numClientes)--;
     
@@ -401,8 +410,8 @@ void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClie
     sprintf(buffer,"Desconexión del cliente: %d\n",socket);
     
     for(j=0; j<(*numClientes); j++)
-        if(arrayClientes[j] != socket)
-            send(arrayClientes[j],buffer,sizeof(buffer),0);
+        if(usuarios[j].sd != socket)
+            send(usuarios[j].sd,buffer,sizeof(buffer),0);
 
     printf("<%i>: Desconectado\n",socket);
 
@@ -539,7 +548,7 @@ int existe_username(char user[]){
 } 
 
 
-int find_user(user usuarios[MAX_CLIENTS], int sd_buscado){
+int find_pv(user usuarios[MAX_CLIENTS], int sd_buscado){
 
 
     for(int i = 0; i<MAX_CLIENTS; i++){
