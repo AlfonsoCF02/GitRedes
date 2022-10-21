@@ -27,6 +27,8 @@ void comprobarEmpate(){
 }
 
 void comprobarVictoriaX(int pos1, int pos2){
+
+//----------VERTICAL------------------
 int count=0;
       for(int j=0; j<MAX_COLUMN; j++){
          if(A[pos1][j]=='X'){
@@ -42,6 +44,8 @@ int count=0;
          }
       }
 
+//-------------HORIZONTAL------------------
+
 count=0;
    for(int i=0; i<MAX_LINE; i++){
          if(A[i][pos2]=='X'){
@@ -54,16 +58,17 @@ count=0;
          }
       }
 
+//-----------DIAGONAL(ArribaAbajo)-----------
 
-int x=pos1;
-int y=pos2;
+int x1=pos1;
+int y1=pos2;
 printf("X antes de bucle:%d\n", x);
    while((y>0&&y<6)&&(x>1&&x<6)){
-      x--;
-      y--;
+      x1--;
+      y1--;
    }
 int diagonalCount=0;
-int i1=x;
+int i1=x1;
 int j1=0;
    for(i1, j1; (i1>=0&&i1<MAX_LINE)&&(j1<=MAX_COLUMN); i1++, j1++){
          if(A[i1][j1]=='X'){
@@ -78,6 +83,10 @@ int j1=0;
             exit(-1);
          }
    }
+
+
+//---------DIAGONAL(AbajoArriba)---------------
+
 
 }
 
