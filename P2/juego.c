@@ -32,6 +32,9 @@ int count=0;
          if(A[pos1][j]=='X'){
             count++;
          }
+         if(A[pos1][j]=='O'){
+            count=0;
+         }
          if(count==4){
             ganar=1;
             printf("Jugador1 ha ganado\n");
@@ -58,14 +61,16 @@ printf("X antes de bucle:%d\n", x);
    while((y>0&&y<6)&&(x>1&&x<6)){
       x--;
       y--;
-      printf("%d\n", x);
    }
 int diagonalCount=0;
-   for(int i=x, j=0; (i<=0)&&(j<=MAX_COLUMN); i++, j++){
-      printf("[%d][%d]\n", i,j);
-         if(A[i][j]=='X'){
+int i1=x;
+int j1=0;
+   for(i1, j1; (i1>=0&&i1<MAX_LINE)&&(j1<=MAX_COLUMN); i1++, j1++){
+         if(A[i1][j1]=='X'){
             diagonalCount++;
-            printf("Cuenta:%d\n", diagonalCount);
+         }
+         if(A[i1][j1]=='O'){
+            diagonalCount=0;
          }
          if(diagonalCount==4){
             ganar=1;
@@ -82,6 +87,9 @@ int count=0;
       for(int j=0; j<MAX_COLUMN; j++){
          if(A[pos1][j]=='O'){
             count++;
+         }
+         if(A[pos1][j]=='X'){
+            count=0;
          }
          if(count==4){
             ganar=1;
@@ -102,24 +110,28 @@ count=0;
          }
       }
 
-   for(int i=6; i<0; i--){ //diagonal arriba abajo i-d
-      for(int j=0; j<7; j++){
-         if((A[i][j]=='O')&&(A[i-1][j+1]=='O')&&(A[i-2][j+2]=='O')&&(A[i-3][j+3]=='O')){
-            ganar=1;
-            printf("Jugador2 ha ganado\n");
-            exit(-1);
-         } 
-      }
+int x=pos1;
+int y=pos2;
+printf("X antes de bucle:%d\n", x);
+   while((y>0&&y<6)&&(x>1&&x<6)){
+      x--;
+      y--;
    }
-
-   for(int i=0; i<6; i++){
-      for(int j=7; j<0; j--){
-         if((A[i][j]=='O')&&(A[i+1][j-1]=='O')&&(A[i+2][j-2]=='O')&&(A[i+3][j-3]=='O')){
+int diagonalCount=0;
+int i1=x;
+int j1=0;
+   for(i1, j1; (i1>=0&&i1<MAX_LINE)&&(j1<=MAX_COLUMN); i1++, j1++){
+         if(A[i1][j1]=='O'){
+            diagonalCount++;
+         }
+         if(A[i1][j1]=='X'){
+            diagonalCount=0;
+         }
+         if(diagonalCount==4){
             ganar=1;
             printf("Jugador2 ha ganado\n");
             exit(-1);
-         } 
-      }
+         }
    }
 
 }
