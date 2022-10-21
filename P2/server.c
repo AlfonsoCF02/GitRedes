@@ -5,47 +5,18 @@
 #include <netdb.h>
 #include <stdlib.h>
 #include <string.h>
-#include<signal.h>
+#include <signal.h>
 #include <unistd.h>
 #include <time.h>
 #include <arpa/inet.h>
 
-#define MSG_SIZE 250
-#define MAX_CLIENTS 50
-#define MAX_P_SIMULT 10
-#define DATABASE "Database.txt"
-
-int manejador_flag = 0;
-
-typedef struct user{
-    int sd;
-    char user[MSG_SIZE];
-    char pass[MSG_SIZE];
-    int logeado; // 0 si - 1 no
-    int enespera; // 0 -> no
-    int turno; // 0 -> no
-}user;
-
-typedef struct partida{
-    int sd1;
-    int sd2;
-    char A[6][7];
-    int enjuego; // 0 -> no
-}partida;
-
-user usuarios[MAX_CLIENTS];
-partida partidas[MAX_P_SIMULT];
+#include "listas.h"
+#include "juego.h"
+#include "server.h"
 
 /*
  * El servidor ofrece el servicio de un juego 4 en raya
  */
-
-void manejador(int signum);
-void salirCliente(int socket, fd_set * readfds, int * numClientes, int arrayClientes[]);
-int login(char user[], char pass[]);
-int registro(char user[], char pass[]);
-int existe_username(char user[]);
-
 
 int main ( )
 {
@@ -67,7 +38,10 @@ int main ( )
    	char identificador[MSG_SIZE];
     int on, ret;
 
-    
+    //Vectores de usuarios y partidas
+    user usuarios[MAX_CLIENTS];
+    partida partidas[MAX_P_SIMULT];
+
 	/* --------------------------------------------------
 		Se abre el socket 
 	---------------------------------------------------*/
@@ -563,3 +537,17 @@ int existe_username(char user[]){
     //No se ha encontrado
     return 1;
 } 
+
+
+int find_user(user usuarios[MAX_CLIENTS], int sd_buscado){
+
+
+    for(int i = 0; i<MAX_CLIENTS; i++){
+        if(usuarios[i].sd == sd_buscado){
+            return i;
+        }
+    }
+
+    return -1;
+
+}
