@@ -87,6 +87,29 @@ int j1=0;
 
 //---------DIAGONAL(AbajoArriba)---------------
 
+int x2=pos1;
+int y2=pos2;
+printf("X antes de bucle:%d\n", x);
+   while((y>0&&y<6)&&(x>1&&x<6)){
+      x2++;
+      y2++;
+   }
+int diagonalCount=0;
+int i2=x2;
+int j2=0;
+   for(i2, j2; (i2>=0&&i2<MAX_LINE)&&(j2<=MAX_COLUMN); i2--, j2--){
+         if(A[i2][j2]=='X'){
+            diagonalCount++;
+         }
+         if(A[i2][j2]=='O'){
+            diagonalCount=0;
+         }
+         if(diagonalCount==4){
+            ganar=1;
+            printf("Jugador1 ha ganado\n");
+            exit(-1);
+         }
+   }
 
 }
 
