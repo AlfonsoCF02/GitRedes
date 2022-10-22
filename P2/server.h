@@ -35,6 +35,8 @@ void manejador(int signum);
 void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios[]);
 void enviar_mensaje(int socket_destino, char mensaje[MSG_SIZE]);
 
+void enviar_nuevo_tablero(int sd_enviar, char A[6][7]);
+
     //Manejo BBDD
 
 int login(char user[], char pass[]);
@@ -45,5 +47,9 @@ int existe_username(char user[]);
 void inicialzar_estructuras(user usuarios[], partida partidas[], int vectorEspera[]);
 void inicialzar_usuario(user usuarios[], int numClientes);
 int find_pv(user usuarios[MAX_CLIENTS], int sd_buscado);
+
+    //Manejo estuctuas
+
+void sacar_le(int vectorEspera[], int borrar, int* numEspera);
 
 #endif

@@ -361,26 +361,41 @@ int main ( )
                                                     usuarios[pv].enespera = 0; //Se pone en espera
 
                                                     vectorEspera[numEspera] = i; //Se añade a listaespera
-printf("vector espera: %d, ne: %d\n,", vectorEspera[numEspera],numEspera);
                                                     numEspera++;
     
                                                     //Si hay dos personas en espera
                                                     if((vectorEspera[0] != -1) && (vectorEspera[1] != -1)){
-printf("ifvector espera0: %d, ve1: %d\n,", vectorEspera[0],vectorEspera[1]);
+
                                                         //Se crea la partida
                                                         partidas[enjuego].sd1 = vectorEspera[0];
                                                         partidas[enjuego].sd2 = vectorEspera[1];
                                                         partidas[enjuego].turno = vectorEspera[0];
-printf("part %d - SD1: %d, sd2: %d\n",enjuego, partidas[enjuego].sd1, partidas[enjuego].sd2);
                                                         enjuego++;
-
+printf("antes pe - SD1: %d, sd2: %d", partidas[enjuego - 1].sd1, partidas[enjuego - 1].sd2);
                                                         //Activamos bandera de en juego
                                                         usuarios[find_pv(usuarios, vectorEspera[0])].enjuego = 0;
                                                         usuarios[find_pv(usuarios, vectorEspera[1])].enjuego = 0;
-printf("finpv - enjuego: %d, findpv: %d\n", usuarios[find_pv(usuarios, vectorEspera[0])].enjuego, find_pv(usuarios, vectorEspera[0]));
+
                                                         //Desactivamos bandera en espera
                                                         usuarios[find_pv(usuarios, vectorEspera[0])].enespera = 0;
                                                         usuarios[find_pv(usuarios, vectorEspera[1])].enespera = 0;
+
+                                                        //Sacamos a los dos del vector de espera
+                                                        //(movemos a los demas adelante)
+                                                        sacar_le(vectorEspera, vectorEspera[0], &numEspera);
+                                                        sacar_le(vectorEspera, vectorEspera[1], &numEspera);
+                                                        //HACER Inicializamos la matriz de la partida con -
+
+
+
+
+printf("desues pe - SD1: %d, sd2: %d", partidas[enjuego - 1].sd1, partidas[enjuego - 1].sd2);
+                                                        //Se envia a los dos +Ok empieza y el tablero en blanco
+                                                        enviar_mensaje(partidas[enjuego - 1].sd1 ,"+Ok. Empieza la partida. -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-;-,-,-,-,-,-,-;");
+                                                        enviar_mensaje(partidas[enjuego - 1].sd2 ,"+Ok. Empieza la partida. -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-;-,-,-,-,-,-,-;");
+
+                                                        //Se le envia a quien tiene que empezar el turno
+                                                        enviar_mensaje(partidas[enjuego - 1].turno, "Ok. Turno de partida");
 
                                                     }
                                                     else{
@@ -436,7 +451,6 @@ printf("finpv - enjuego: %d, findpv: %d\n", usuarios[find_pv(usuarios, vectorEsp
 
 void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios[]){
 
-    char buffer[250];
     int j;
 
 /*      PARA DEPURAR --- BORRAR ANTES DE ENTREGAR
@@ -679,5 +693,30 @@ void inicialzar_estructuras(user usuarios[], partida partidas[], int vectorEsper
     for(z=0 ; z< MAX_CLIENTS; z++){
         vectorEspera[z] = -1;
     }
+
+}
+
+void sacar_le(int vectorEspera[], int borrar, int* numEspera){
+
+    int j;
+    
+    //Re-estructurar el array de clientes
+    for (j = 0; j < *(numEspera) - 1; j++)
+        if (vectorEspera[j] == borrar)
+            break;
+    for (; j < *(numEspera) - 1; j++)
+        (vectorEspera[j] = vectorEspera[j+1]);
+
+    //Al moverlos todos 1 posicion adelante el ultimo hay que borrarlo
+    vectorEspera[*(numEspera)] = -1;
+
+    (*numEspera)--;
+
+}
+
+void enviar_nuevo_tablero(int sd_enviar, char A[6][7]){
+
+    //IMPLEMENTAR EL PASAR LA MATRIZ
+
 
 }
