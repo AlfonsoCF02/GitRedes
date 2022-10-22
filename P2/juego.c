@@ -165,7 +165,7 @@ int j1=y1;
          if(A[i1][j1]=='O'){
             diagonalCount++;
          }
-         if(A[i1][j1]=='X'){
+         if(A[i1][j1]=='X'||A[i1][j1]=='-'){
             diagonalCount=0;
          }
          if(diagonalCount==4){
