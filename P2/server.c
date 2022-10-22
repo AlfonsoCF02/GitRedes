@@ -371,7 +371,7 @@ int main ( )
                                                         partidas[enjuego].sd2 = vectorEspera[1];
                                                         partidas[enjuego].turno = vectorEspera[0];
                                                         enjuego++;
-printf("antes pe - SD1: %d, sd2: %d", partidas[enjuego - 1].sd1, partidas[enjuego - 1].sd2);
+
                                                         //Activamos bandera de en juego
                                                         usuarios[find_pv(usuarios, vectorEspera[0])].enjuego = 0;
                                                         usuarios[find_pv(usuarios, vectorEspera[1])].enjuego = 0;
@@ -389,7 +389,6 @@ printf("antes pe - SD1: %d, sd2: %d", partidas[enjuego - 1].sd1, partidas[enjueg
 
 
 
-printf("desues pe - SD1: %d, sd2: %d", partidas[enjuego - 1].sd1, partidas[enjuego - 1].sd2);
                                                         //Se envia a los dos +Ok empieza y el tablero en blanco
                                                         enviar_mensaje(partidas[enjuego - 1].sd1 ,"+Ok. Empieza la partida. -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-;-,-,-,-,-,-,-;");
                                                         enviar_mensaje(partidas[enjuego - 1].sd2 ,"+Ok. Empieza la partida. -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-;-,-,-,-,-,-,-;");
