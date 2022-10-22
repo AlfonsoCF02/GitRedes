@@ -318,42 +318,76 @@ int main ( )
                                 }
                                 else if(strcmp(orden,"COLOCAR-FICHA") == 0){ 
                                     
-                                    //Almacenamos la posicion recibida
-                                    sprintf(buffer, strtok(NULL, " "));
+                                    //Solo pueden colocar ficha usuarios logueados
+                                    if(usuarios[pv].logueado == 0){
 
-                                    //Comprobamos si la cadena es un numero y convertirlo a int
-                                    char *endptr;
-                                    int pos_rec = (int) strtol(buffer, &endptr, 10);
+                                        if(usuarios[pv].enjuego == 0){  //Tiene que estar jugando una partida
 
-                                    if (((*buffer) != '\0') && ((*endptr) == '\0')) {
-                                        // strtol tiene éxito, la cadena contiene un número
-                                        // y lo almacena convertido a int en pos_rec
+                                            int p = find_pv_partida(partidas, i);
 
-                                        /*  FUNCIONAMIENTO strol
-                                        long strtol(const char *nptr, char **endptr, int base);
-                                        Traducción: Si endptr no es NULL, strtol() almacena la dirección del primer carácter 
-                                        inválido en *endptr. Si no aparece ningún dígito, strtol() almacena el valor original 
-                                        de nptr en *endptr (y devuelve 0). En particular, si *nptr no es '\0' pero **endptr es '\0' 
-                                        cuando la función retorna, la cadena al completo es válida.
-                                        */
-                                        
-                                        //Implemetar logica para colocar la ficha
+                                            if(partidas[p].turno == i){
 
-                                            //Cuidado controlar que si no se puede colocar
-                                            //en la posicion seleccionada retornar error 
-                                            //del else  
+                                                //Almacenamos la posicion recibida
+                                                sprintf(buffer, strtok(NULL, " "));
 
-                                        //Comprobamos empate
+                                                //Comprobamos si la cadena es un numero y convertirlo a int
+                                                char *endptr;
+                                                int pos_rec = (int) strtol(buffer, &endptr, 10);
 
-                                        //Comprobamos victoria
+                                                if (((*buffer) != '\0') && ((*endptr) == '\0')) {
+                                                    // strtol tiene éxito, la cadena contiene un número
+                                                    // y lo almacena convertido a int en pos_rec
 
-                                            //Si ninguno gana cambiamos turno
+                                                    /*  FUNCIONAMIENTO strol
+                                                    long strtol(const char *nptr, char **endptr, int base);
+                                                    Traducción: Si endptr no es NULL, strtol() almacena la dirección del primer carácter 
+                                                    inválido en *endptr. Si no aparece ningún dígito, strtol() almacena el valor original 
+                                                    de nptr en *endptr (y devuelve 0). En particular, si *nptr no es '\0' pero **endptr es '\0' 
+                                                    cuando la función retorna, la cadena al completo es válida.
+                                                    */
+                                                    
+                                                    //Comprobamos si el turno es correcto
+                                                        //Buscamos la partida asociada al jugador
 
-                                        //Enviar matrices actualizadas
+                                                    //Cuidado controlar que si no se puede colocar
+                                                    //en la posicion seleccionada retornar error 
+                                                    //del else  
+                                                    enviar_mensaje(i, "+OK. Ficha colocada");
+                                                    //Comprobamos empate
+                                                    
+                                                    //Comprobamos victoria
 
+                                                        //Si ninguno gana cambiamos turno
+
+                                                    //Enviar matrices actualizadas
+                                                    
+                                                    //Ponemos el turno al siguiente
+                                                    if(partidas[p].turno == partidas[p].sd1){
+                                                        partidas[p].turno = partidas[p].sd2;
+                                                        printf("cambiado el turno al sd2\n");
+                                                    }
+                                                    else{
+                                                        partidas[p].turno = partidas[p].sd1;
+                                                        printf("cambiado el turno al sd1\n");
+                                                    }
+                                                    
+                                                    enviar_mensaje(partidas[p].turno, "+Ok. Turno de partida");
+
+                                                }
+                                                else{
+                                                    enviar_mensaje(i, "-Err. la posicion debe ser un numero");
+                                                }
+                                            }
+                                            else{
+                                                enviar_mensaje(i, "-Err. Debe esperar su turno");
+                                            }
+                                        }    
+                                        else{
+                                            enviar_mensaje(i, "-Err. Usted no esta jugando ninguna partida");
+                                        }
                                     }
                                     else{
-                                        enviar_mensaje(i, "-Err. Posicion no valida");
+                                        enviar_mensaje(i, "-Err. debe estar logueado para colocar ficha");
                                     }
                                 }
                                 else if(strcmp(orden,"INICIAR-PARTIDA") == 0){ 
@@ -487,7 +521,7 @@ void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios
 
     //Re-estructurar el array de clientes
 
-    for (; pos_usr < (*numClientes) - 1; j++){
+    for (; pos_usr < (*numClientes) - 1; pos_usr++){
         (usuarios[pos_usr] = usuarios[pos_usr+1]);
     }
     //Al moverlos todos 1 posicion adelante el ultimo hay que borrarlo
@@ -760,5 +794,19 @@ void borrar_partida(partida partidas[], int socket, int* enjuego, user usuarios[
     //poner la matriz a 0
 
     (*enjuego)--;
+
+}
+
+int find_pv_partida(partida partidas[], int sd_buscado){
+
+    int j;
+
+    for (j = 0; j < MAX_P_SIMULT - 1; j++){
+        if ((partidas[j].sd1 == sd_buscado) || (partidas[j].sd2 == sd_buscado)){
+            return j;
+        }
+    }
+
+    return -1;
 
 }

@@ -47,7 +47,7 @@ int existe_username(char user[]);
 void inicialzar_estructuras(user usuarios[], partida partidas[], int vectorEspera[]);
 void inicialzar_usuario(user usuarios[], int numClientes);
 int find_pv(user usuarios[MAX_CLIENTS], int sd_buscado);
-
+int find_pv_partida(partida partidas[], int sd_buscado);
     //Manejo estuctuas
 void sacar_le(int vectorEspera[], int borrar, int* numEspera);
 void borrar_partida(partida partidas[], int socket, int* enjuego,user usuarios[], int avisar);
