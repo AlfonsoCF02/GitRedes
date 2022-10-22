@@ -6,7 +6,7 @@
 #define MAX_P_SIMULT 10
 #define DATABASE "Database.txt"
 
-    //Estructuras de manejo de usuarios y partidas
+    //Estruc    ras de manejo de usuarios y partidas
 
 typedef struct user{
     int sd;
@@ -32,11 +32,11 @@ void manejador(int signum);
 
     //Funcionalidades del servidor
 
-void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios[]);
+void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios[], int vectorEspera[], int* numEspera, partida partidas[], int* enjuego);
 void enviar_mensaje(int socket_destino, char mensaje[MSG_SIZE]);
 
 void enviar_nuevo_tablero(int sd_enviar, char A[6][7]);
-
+void terminar_partida(partida partidas[], int socket, int* enjuego);
     //Manejo BBDD
 
 int login(char user[], char pass[]);
@@ -49,7 +49,7 @@ void inicialzar_usuario(user usuarios[], int numClientes);
 int find_pv(user usuarios[MAX_CLIENTS], int sd_buscado);
 
     //Manejo estuctuas
-
 void sacar_le(int vectorEspera[], int borrar, int* numEspera);
+void borrar_partida(partida partidas[], int socket, int* enjuego, int avisar);
 
 #endif

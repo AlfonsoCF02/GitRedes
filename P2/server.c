@@ -234,7 +234,7 @@ int main ( )
 
                                 if(strcmp(buffer,"SALIR") == 0){  // Cliente qiuere salir
                                     
-                                    salirCliente(i,&readfds,&numClientes,usuarios);
+                                    salirCliente(i,&readfds,&numClientes,usuarios,vectorEspera, &numEspera, partidas, &enjuego);
                                     
                                 }
                                 else if(strcmp(orden,"USUARIO") == 0){ // Cliente manda USUARIO
@@ -338,10 +338,18 @@ int main ( )
                                         */
                                         
                                         //Implemetar logica para colocar la ficha
-                                            
+
                                             //Cuidado controlar que si no se puede colocar
                                             //en la posicion seleccionada retornar error 
                                             //del else  
+
+                                        //Comprobamos empate
+
+                                        //Comprobamos victoria
+
+                                            //Si ninguno gana cambiamos turno
+
+                                        //Enviar matrices actualizadas
 
                                     }
                                     else{
@@ -435,7 +443,7 @@ int main ( )
                                 // de forma abructa
                             {
                                 //Eliminar ese socket
-                                salirCliente(i,&readfds,&numClientes,usuarios);
+                                salirCliente(i,&readfds,&numClientes,usuarios,vectorEspera, &numEspera, partidas, &enjuego);
                             }
                         }
                     }
@@ -448,25 +456,35 @@ int main ( )
 	
 }
 
-void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios[]){
+void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios[], int vectorEspera[], int* numEspera, partida partidas[], int* enjuego){
 
     int j;
 
-/*      PARA DEPURAR --- BORRAR ANTES DE ENTREGAR
-
-       //Imprimir antes de borrar
-       printf("ANTES DE SALIR \n");
-    for (j = 0; j < *numClientes; j++){
-        printf("Pos: %d, SD: %d, User: %s, Pass: %s, logueado: %d, espera: %d, turno: %d\n",
-        j,usuarios[j].sd,usuarios[j].user,usuarios[j].pass,
-        usuarios[j].logueado,usuarios[j].enespera,usuarios[j].turno);
-    }
-
-*/
-
     close(socket);
     FD_CLR(socket,readfds);
+
+    //Lo buscamos en el vector de usurios
+    int pos_usr = find_pv(usuarios, socket);
+        //Si el usuario está en espera
+
+    //Si esta en espera
+    if(usuarios[pos_usr].enespera == 0){
+        sacar_le(vectorEspera, socket, numEspera);
+    }
     
+        //Si el usuario está jugando
+    
+    if(usuarios[pos_usr].enjuego == 0){
+
+        //Si lo ultimo de borrar partida es 1 se avisa al jugador
+        // de que el oponente ha abandonado la partida
+        int avisar_salida = 1;
+
+        borrar_partida(partidas, socket, enjuego, avisar_salida); 
+
+    }
+
+
     //Re-estructurar el array de clientes
     for (j = 0; j < (*numClientes) - 1; j++)
         if (usuarios[j].sd == socket)
@@ -480,18 +498,6 @@ void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios
     (*numClientes)--;
 
     printf("<%i>: Desconectado\n",socket);
-
-/*      PARA DEPURAR --- BORRAR ANTES DE ENTREGAR
-
-    //Imprimir antes de borrar
-    printf("\nDESPUES DE SALIR ");
-    for (j = 0; j < *numClientes; j++){
-        printf("Pos: %d, SD: %d, User: %s, Pass: %s, logueado: %d, espera: %d, turno: %d\n",
-        j,usuarios[j].sd,usuarios[j].user,usuarios[j].pass,
-        usuarios[j].logueado,usuarios[j].enespera,usuarios[j].turno);
-    }
-
-*/
 
 }
 
@@ -684,7 +690,7 @@ void inicialzar_estructuras(user usuarios[], partida partidas[], int vectorEsper
         partidas[z].sd1 = -1;
         partidas[z].sd2 = -1;
         partidas[z].turno = -1;
-        //La matriz ya vemos luego
+        //La matriz ya vemos luego en el de borrar tmb
     }
     
     z = 0;
@@ -717,5 +723,37 @@ void enviar_nuevo_tablero(int sd_enviar, char A[6][7]){
 
     //IMPLEMENTAR EL PASAR LA MATRIZ
 
+
+}
+
+void borrar_partida(partida partidas[], int socket, int* enjuego, int avisar){
+
+    int j;
+    
+    //Encontrar la partida a terminar
+    for (j = 0; j < *(enjuego) - 1; j++)
+        if ((partidas[j].sd1 == socket) || (partidas[j].sd2== socket))
+            break;
+
+    //Decir al otro que el compa se ha desconectado
+    if(avisar == 1){
+        if (partidas[j].sd1 == socket){
+            enviar_mensaje(partidas[j].sd2, "+Ok. Tu oponente ha salido de la partida");
+        }
+        else{
+            enviar_mensaje(partidas[j].sd1, "+Ok. Tu oponente ha salido de la partida");
+        }
+    }
+
+    for (; j < *(enjuego) - 1; j++)
+        (partidas[j] = partidas[j+1]);
+
+    //Al moverlos todos 1 posicion adelante el ultimo hay que borrarlo
+    partidas[*(enjuego)].sd1 = -1;
+    partidas[*(enjuego)].sd2 = -1;
+    partidas[*(enjuego)].turno = -1;
+    //poner la matriz a 0
+
+    (*enjuego)--;
 
 }
