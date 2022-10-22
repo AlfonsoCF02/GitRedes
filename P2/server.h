@@ -15,7 +15,6 @@ typedef struct user{
     int logueado; // 1 -> no
     int enespera; // 1 -> no
     int enjuego; // 1-> no
-    int turno; // 1 -> no
 }user;
 
 typedef struct partida{

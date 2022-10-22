@@ -364,11 +364,9 @@ int main ( )
                                                     //Ponemos el turno al siguiente
                                                     if(partidas[p].turno == partidas[p].sd1){
                                                         partidas[p].turno = partidas[p].sd2;
-                                                        printf("cambiado el turno al sd2\n");
                                                     }
                                                     else{
                                                         partidas[p].turno = partidas[p].sd1;
-                                                        printf("cambiado el turno al sd1\n");
                                                     }
                                                     
                                                     enviar_mensaje(partidas[p].turno, "+Ok. Turno de partida");
@@ -669,7 +667,6 @@ void inicialzar_usuario(user usuarios[], int numClientes){
     usuarios[numClientes].logueado = 1;
     usuarios[numClientes].enespera = 1;
     usuarios[numClientes].enjuego = 1;
-    usuarios[numClientes].turno = -1;
 }
 
 int find_pv(user usuarios[MAX_CLIENTS], int sd_buscado){
@@ -713,7 +710,6 @@ void inicialzar_estructuras(user usuarios[], partida partidas[], int vectorEsper
         usuarios[z].logueado = 1;
         usuarios[z].enespera = 1;
         usuarios[z].enjuego = 1;
-        usuarios[z].turno = -1;
     }
 
     z = 0;
@@ -770,8 +766,8 @@ void borrar_partida(partida partidas[], int socket, int* enjuego, user usuarios[
     //Poner los valores de los usuarios disponibles
         int user1 = find_pv(usuarios, partidas[j].sd1);
         int user2 = find_pv(usuarios, partidas[j].sd2);
-        usuarios[user1].enespera = 1; usuarios[user1].enjuego = 1; usuarios[user1].turno = -1;
-        usuarios[user2].enespera = 1; usuarios[user2].enjuego = 1; usuarios[user2].turno = -1;
+        usuarios[user1].enespera = 1; usuarios[user1].enjuego = 1;
+        usuarios[user2].enespera = 1; usuarios[user2].enjuego = 1;
 
     //Decir al otro que el compa se ha desconectado
     if(avisar == 1){
