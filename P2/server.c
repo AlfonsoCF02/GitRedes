@@ -361,21 +361,24 @@ int main ( )
                                                     usuarios[pv].enespera = 0; //Se pone en espera
 
                                                     vectorEspera[numEspera] = i; //Se añade a listaespera
+printf("vector espera: %d, ne: %d\n,", vectorEspera[numEspera],numEspera);
                                                     numEspera++;
-
+    
                                                     //Si hay dos personas en espera
                                                     if((vectorEspera[0] != -1) && (vectorEspera[1] != -1)){
-
+printf("ifvector espera0: %d, ve1: %d\n,", vectorEspera[0],vectorEspera[1]);
                                                         //Se crea la partida
                                                         partidas[enjuego].sd1 = vectorEspera[0];
                                                         partidas[enjuego].sd2 = vectorEspera[1];
                                                         partidas[enjuego].turno = vectorEspera[0];
-printf("VE - SD1: %d, sd2: %d", partidas[enjuego].sd1, partidas[enjuego].sd2);
+printf("part %d - SD1: %d, sd2: %d\n",enjuego, partidas[enjuego].sd1, partidas[enjuego].sd2);
                                                         enjuego++;
 
-                                                        usuarios[find_pv(usuarios, vectorEspera[0])].enjuego = 1;
-                                                        usuarios[find_pv(usuarios, vectorEspera[1])].enjuego = 1;
-printf("finpv - todo: %d, finvp: %d", usuarios[find_pv(usuarios, vectorEspera[0])].enjuego, find_pv(usuarios, vectorEspera[0]));
+                                                        //Activamos bandera de en juego
+                                                        usuarios[find_pv(usuarios, vectorEspera[0])].enjuego = 0;
+                                                        usuarios[find_pv(usuarios, vectorEspera[1])].enjuego = 0;
+printf("finpv - enjuego: %d, findpv: %d\n", usuarios[find_pv(usuarios, vectorEspera[0])].enjuego, find_pv(usuarios, vectorEspera[0]));
+                                                        //Desactivamos bandera en espera
                                                         usuarios[find_pv(usuarios, vectorEspera[0])].enespera = 0;
                                                         usuarios[find_pv(usuarios, vectorEspera[1])].enespera = 0;
 
