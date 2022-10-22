@@ -385,8 +385,8 @@ int main ( )
                                                         usuarios[find_pv(usuarios, vectorEspera[1])].enjuego = 0;
 
                                                         //Desactivamos bandera en espera
-                                                        usuarios[find_pv(usuarios, vectorEspera[0])].enespera = 0;
-                                                        usuarios[find_pv(usuarios, vectorEspera[1])].enespera = 0;
+                                                        usuarios[find_pv(usuarios, vectorEspera[0])].enespera = 1;
+                                                        usuarios[find_pv(usuarios, vectorEspera[1])].enespera = 1;
 
                                                         //Sacamos a los dos del vector de espera
                                                         //(movemos a los demas adelante)
@@ -465,9 +465,9 @@ void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios
 
     //Lo buscamos en el vector de usurios
     int pos_usr = find_pv(usuarios, socket);
-        //Si el usuario está en espera
 
-    //Si esta en espera
+        //Si esta en espera
+
     if(usuarios[pos_usr].enespera == 0){
         sacar_le(vectorEspera, socket, numEspera);
     }
@@ -480,18 +480,16 @@ void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios
         // de que el oponente ha abandonado la partida
         int avisar_salida = 1;
 
-        borrar_partida(partidas, socket, enjuego, avisar_salida); 
+        borrar_partida(partidas, socket, enjuego, usuarios, avisar_salida); 
 
     }
 
 
     //Re-estructurar el array de clientes
-    for (j = 0; j < (*numClientes) - 1; j++)
-        if (usuarios[j].sd == socket)
-            break;
-    for (; j < (*numClientes) - 1; j++)
-        (usuarios[j] = usuarios[j+1]);
 
+    for (; pos_usr < (*numClientes) - 1; j++){
+        (usuarios[pos_usr] = usuarios[pos_usr+1]);
+    }
     //Al moverlos todos 1 posicion adelante el ultimo hay que borrarlo
     inicialzar_usuario(usuarios, *numClientes);
 
@@ -726,7 +724,7 @@ void enviar_nuevo_tablero(int sd_enviar, char A[6][7]){
 
 }
 
-void borrar_partida(partida partidas[], int socket, int* enjuego, int avisar){
+void borrar_partida(partida partidas[], int socket, int* enjuego, user usuarios[], int avisar){
 
     int j;
     
@@ -734,6 +732,12 @@ void borrar_partida(partida partidas[], int socket, int* enjuego, int avisar){
     for (j = 0; j < *(enjuego) - 1; j++)
         if ((partidas[j].sd1 == socket) || (partidas[j].sd2== socket))
             break;
+
+    //Poner los valores de los usuarios disponibles
+        int user1 = find_pv(usuarios, partidas[j].sd1);
+        int user2 = find_pv(usuarios, partidas[j].sd2);
+        usuarios[user1].enespera = 1; usuarios[user1].enjuego = 1; usuarios[user1].turno = -1;
+        usuarios[user2].enespera = 1; usuarios[user2].enjuego = 1; usuarios[user2].turno = -1;
 
     //Decir al otro que el compa se ha desconectado
     if(avisar == 1){
@@ -745,6 +749,7 @@ void borrar_partida(partida partidas[], int socket, int* enjuego, int avisar){
         }
     }
 
+    //Reestructurar el vector de partidas
     for (; j < *(enjuego) - 1; j++)
         (partidas[j] = partidas[j+1]);
 
