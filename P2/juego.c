@@ -28,85 +28,86 @@ void comprobarEmpate(){
 
 void comprobarVictoriaX(int pos1, int pos2){
 
-//----------VERTICAL------------------
+//----------HORIZONTAL------------------
 int count=0;
       for(int j=0; j<MAX_COLUMN; j++){
          if(A[pos1][j]=='X'){
             count++;
          }
-         if(A[pos1][j]=='O'){
+         if(A[pos1][j]=='O'||A[pos1][j]=='-'){
             count=0;
          }
          if(count==4){
             ganar=1;
-            printf("Jugador1 ha ganado\n");
+            printf("Jugador 1 ha ganado\n");
             exit(-1);
          }
       }
 
-//-------------HORIZONTAL------------------
+//-------------VERTICAL------------------
 
 count=0;
    for(int i=0; i<MAX_LINE; i++){
          if(A[i][pos2]=='X'){
             count++;
          }
+         if(A[i][pos2]=='O'||A[i][pos2]=='-'){
+            count=0;
+         }
          if(count==4){
             ganar=1;
-            printf("Jugador1 ha ganado\n");
+            printf("Jugador 1 ha ganado\n");
             exit(-1);
          }
       }
 
-//-----------DIAGONAL(ArribaAbajo)-----------
+//-----------DIAGONAL(IZQDA-DCHA)-----------
 
 int x1=pos1;
 int y1=pos2;
-printf("X antes de bucle:%d\n", x);
-   while((y>0&&y<6)&&(x>1&&x<6)){
+   while((y1>0)&&(x1>0)){
       x1--;
       y1--;
    }
 int diagonalCount=0;
 int i1=x1;
-int j1=0;
+int j1=y1;
    for(i1, j1; (i1>=0&&i1<MAX_LINE)&&(j1<=MAX_COLUMN); i1++, j1++){
          if(A[i1][j1]=='X'){
             diagonalCount++;
          }
-         if(A[i1][j1]=='O'){
+         if(A[i1][j1]=='O'||A[i1][j1]=='-'){
             diagonalCount=0;
          }
          if(diagonalCount==4){
             ganar=1;
-            printf("Jugador1 ha ganado\n");
+            printf("Jugador 1 ha ganado\n");
             exit(-1);
          }
    }
 
 
-//---------DIAGONAL(AbajoArriba)---------------
+//---------DIAGONAL(DCHA-IZQDA)---------------
 
 int x2=pos1;
 int y2=pos2;
-printf("X antes de bucle:%d\n", x);
-   while((y>0&&y<6)&&(x>1&&x<6)){
-      x2++;
+   while((y2>0)&&(x2>0)){
+      x2--;
       y2++;
    }
-int diagonalCount=0;
+int diagonalCount2=0;
 int i2=x2;
-int j2=0;
-   for(i2, j2; (i2>=0&&i2<MAX_LINE)&&(j2<=MAX_COLUMN); i2--, j2--){
+int j2=y2;
+   for(i2, j2; (i2>=0&&i2<MAX_LINE)&&(j2<=MAX_COLUMN); i2++, j2--){
          if(A[i2][j2]=='X'){
-            diagonalCount++;
+            diagonalCount2++;
          }
-         if(A[i2][j2]=='O'){
-            diagonalCount=0;
+         if(A[i2][j2]=='O'||A[i2][j2]=='-'){
+            diagonalCount2=0;
          }
-         if(diagonalCount==4){
+         if(diagonalCount2==4){
             ganar=1;
-            printf("Jugador1 ha ganado\n");
+            printf("Jugador 1 ha ganado\n");
             exit(-1);
          }
    }
@@ -115,43 +116,51 @@ int j2=0;
 
 void comprobarVictoriaO(int pos1, int pos2){
 
+//----------HORIZONTAL------------------
+
 int count=0;
       for(int j=0; j<MAX_COLUMN; j++){
          if(A[pos1][j]=='O'){
             count++;
          }
-         if(A[pos1][j]=='X'){
+         if(A[pos1][j]=='X'||A[pos1][j]=='-'){
             count=0;
          }
          if(count==4){
             ganar=1;
-            printf("Jugador2 ha ganado\n");
+            printf("Jugador 2 ha ganado\n");
             exit(-1);
          }
       }
 
-count=0;
+//-------------VERTICAL------------------
+
+int count2=0;
    for(int i=0; i<MAX_LINE; i++){
          if(A[i][pos2]=='O'){
-            count++;
+            count2++;
          }
-         if(count==4){
+         if(A[i][pos2]=='X'||A[i][pos2]=='-'){
+            count2=0;
+         }
+         if(count2==4){
             ganar=1;
-            printf("Jugador2 ha ganado\n");
+            printf("Jugador 2 ha ganado\n");
             exit(-1);
          }
       }
 
-int x=pos1;
-int y=pos2;
-printf("X antes de bucle:%d\n", x);
-   while((y>0&&y<6)&&(x>1&&x<6)){
-      x--;
-      y--;
+//-----------DIAGONAL(IZQDA-DCHA)-----------
+
+int x1=pos1;
+int y1=pos2;
+   while((y1>0)&&(x1>0)){
+      x1--;
+      y1--;
    }
 int diagonalCount=0;
-int i1=x;
-int j1=0;
+int i1=x1;
+int j1=y1;
    for(i1, j1; (i1>=0&&i1<MAX_LINE)&&(j1<=MAX_COLUMN); i1++, j1++){
          if(A[i1][j1]=='O'){
             diagonalCount++;
@@ -161,7 +170,32 @@ int j1=0;
          }
          if(diagonalCount==4){
             ganar=1;
-            printf("Jugador2 ha ganado\n");
+            printf("Jugador 2 ha ganado\n");
+            exit(-1);
+         }
+   }
+
+//---------DIAGONAL(DCHA-IZQDA)---------------
+
+int x2=pos1;
+int y2=pos2;
+   while((y2>0)&&(x2>0)){
+      x2--;
+      y2++;
+   }
+int diagonalCount2=0;
+int i2=x2;
+int j2=y2;
+   for(i2, j2; (i2>=0&&i2<MAX_LINE)&&(j2<=MAX_COLUMN); i2++, j2--){
+         if(A[i2][j2]=='O'){
+            diagonalCount2++;
+         }
+         if(A[i2][j2]=='X'||A[i2][j2]=='-'){
+            diagonalCount2=0;
+         }
+         if(diagonalCount2==4){
+            ganar=1;
+            printf("Jugador 2 ha ganado\n");
             exit(-1);
          }
    }
@@ -359,7 +393,7 @@ while(ganar==0&&empate==0){
       };
       imprimeMatrizActual();
       comprobarEmpate();
-      comprobarVictoriaO(pos1, pos2);
+      comprobarVictoriaO(x, pos2);
    }
    }
 }
