@@ -13,8 +13,7 @@ void imprimeMatrizVacia();
 void imprimeMatrizActual(char A[6][7]);
 void pasarMensajeAMatriz(char buffer[250], char A[6][7]);
 
-int main ( )
-{
+int main(){
   
 	/*---------------------------------------------------- 
 		Descriptor del socket y buffer de datos                
@@ -23,27 +22,25 @@ int main ( )
 	struct sockaddr_in sockname;
 	char buffer[250];
 	socklen_t len_sockname;
-    	fd_set readfds, auxfds;
-    	int salida;
-    	int fin = 0;
+	fd_set readfds, auxfds;
+	int salida;
+	int fin = 0;
 	
     
 	/* --------------------------------------------------
 		Se abre el socket 
 	---------------------------------------------------*/
   	sd = socket (AF_INET, SOCK_STREAM, 0);
-	if (sd == -1)
-	{
+	if (sd == -1){
 		perror("No se puede abrir el socket cliente\n");
-    		exit (1);	
+    	exit (1);	
 	}
-
-   
     
 	/* ------------------------------------------------------------------
 		Se rellenan los campos de la estructura con la IP del 
 		servidor y el puerto del servicio que solicitamos
 	-------------------------------------------------------------------*/
+
 	sockname.sin_family = AF_INET;
 	sockname.sin_port = htons(2060);
 	sockname.sin_addr.s_addr =  inet_addr("127.0.0.1");
@@ -51,6 +48,7 @@ int main ( )
 	/* ------------------------------------------------------------------
 		Se solicita la conexión con el servidor
 	-------------------------------------------------------------------*/
+
 	len_sockname = sizeof(sockname);
 	
 	if (connect(sd, (struct sockaddr *)&sockname, len_sockname) == -1)
@@ -76,16 +74,18 @@ int main ( )
 	/* ------------------------------------------------------------------
 		Se transmite la información
 	-------------------------------------------------------------------*/
-	do
-	{
-        auxfds = readfds; // xk el select se lo carga
+	do{
+	
+        auxfds = readfds; // Para evitar perderlo por el select
         salida = select(sd+1,&auxfds,NULL,NULL,NULL);
         
-        //Tengo mensaje desde el servidor
+        //Se ha recibido un mensaje del servidor
         if(FD_ISSET(sd, &auxfds)){
             
             bzero(buffer,sizeof(buffer));
-            recv(sd,buffer,sizeof(buffer),0); //sizeof xk siempre mandadmos el tamaño max
+            recv(sd,buffer,sizeof(buffer),0);
+
+			//Se procesa el mensaje
 
             if(strcmp(buffer,"Demasiados clientes conectados\n") == 0){
 				printf("\n%s\n",buffer);
@@ -101,7 +101,7 @@ int main ( )
 				imprimeMatrizVacia();
 			}
 			else if (strstr(buffer, "+Ok. Nuevo tablero. ") != NULL) {
-				//Si se procesa e imprime la nueva matriz
+				//Si se procesa e imprime la nueva matriz (tablero)
 				char A[6][7];
 				pasarMensajeAMatriz(buffer, A);
 				imprimeMatrizActual(A);
@@ -112,29 +112,25 @@ int main ( )
 			}
             
         }
-        else
-        {
+        else{
             
-            //He introducido información por teclado (salir del servidor)
+            //Se envia lo introducido por teclado al servidor
             if(FD_ISSET(0,&auxfds)){
+
                 bzero(buffer,sizeof(buffer));
-                
                 fgets(buffer,sizeof(buffer),stdin);
                 
+				//Si se ha introducido salir se termina el programa
                 if(strcmp(buffer,"SALIR\n") == 0){
-                        fin = 1;
-                
+                    fin = 1;
                 }
                 
                 send(sd,buffer,sizeof(buffer),0);
                 
             }
             
-            
         }
-        
-        
-				
+			
     }while(fin == 0);
 		
     close(sd);
@@ -144,6 +140,9 @@ int main ( )
 }
 
 void imprimeMatrizVacia(){
+
+	//Imprime una matriz vacia
+
    printf("|1|2|3|4|5|6|7|\n");
    for(int i=0; i<6; i++){
       for(int j=0; j<7; j++){
@@ -153,9 +152,13 @@ void imprimeMatrizVacia(){
       printf("\n");
    }
    printf("\n");
+
 }
 
 void imprimeMatrizActual(char A[6][7]){
+
+	//Imprime la matriz actual
+	
    printf("|1|2|3|4|5|6|7|\n");
    for(int i=0; i<6; i++){
       for(int j=0; j<7; j++){
@@ -166,9 +169,14 @@ void imprimeMatrizActual(char A[6][7]){
       printf("\n");
    }
    printf("\n");
+
 }
 
 void pasarMensajeAMatriz(char buffer[250], char A[6][7]){
+
+	//Transforma el mensaje recibido del servidor con el formato
+	//especificado en el protocolo a una matriz.
+
 	int countBuffer=20;
 	for(int i=0; i<6; i++){
 		for(int j=0; j<7; j++){
@@ -183,4 +191,5 @@ void pasarMensajeAMatriz(char buffer[250], char A[6][7]){
 			}
 		}
 	}
+
 }

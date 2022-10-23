@@ -17,8 +17,7 @@
  * El servidor ofrece el servicio de un juego 4 en raya.
  */
 
-int main ( )
-{
+int main(){
 
     //Se captura la señal SIGINT (Ctrl+c) en el server y se le asocia un manejador
     signal(SIGINT,manejador);
