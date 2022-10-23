@@ -866,3 +866,25 @@ int find_pv_partida(partida partidas[], int sd_buscado){
     return -1;
 
 }
+
+void generar_msg(char msg[MSG_SIZE], char A[6][7]){
+    char msg_inicial[20]="+Ok. Nuevo tablero. ";
+    strcat(msg, msg_inicial);
+    int count_msg=21;
+    for(int i=0; i<6; i++){
+        for(int j=0; j<7; j++){
+            msg[count_msg]=A[i][j];
+            count_msg++;
+            if(j<6){
+                msg[count_msg]=',';
+                count_msg++;
+            }
+            else{
+                msg[count_msg]=';';
+                count_msg++;
+                msg[count_msg]=' ';
+                count_msg++;
+            }
+        }
+    }
+}
