@@ -10,6 +10,8 @@
 #include <arpa/inet.h>
 
 void imprimeMatrizVacia();
+void imprimeMatrizActual(char A[6][7]);
+void pasarMensajeAMatriz(char buffer[250], char A[6][7]);
 
 int main ( )
 {
@@ -100,7 +102,9 @@ int main ( )
 			}
 			else if (strstr(buffer, "+Ok. Nuevo tablero. ") != NULL) {
 				//Si se procesa e imprime la nueva matriz
-
+				char A[6][7];
+				pasarMensajeAMatriz(buffer, A);
+				imprimeMatrizActual(A);
 
 			}
 			else{
@@ -150,4 +154,34 @@ void imprimeMatrizVacia(){
       printf("\n");
    }
    printf("\n");
+}
+
+void imprimeMatrizActual(char A[6][7]){
+   printf("|1|2|3|4|5|6|7|\n");
+   for(int i=0; i<6; i++){
+      for(int j=0; j<7; j++){
+         printf("|");
+         printf("%c", A[i][j]);
+      }
+      printf("|");
+      printf("\n");
+   }
+   printf("\n");
+}
+
+void pasarMensajeAMatriz(char buffer[250], char A[6][7]){
+	int countBuffer=21;
+	for(int i=0; i<6; i++){
+		for(int j=0; j<7; j++){
+			buffer[countBuffer]=A[i][j];
+			countBuffer++;
+			if(j<6){
+				countBuffer++;
+			}
+			else{
+				countBuffer++;
+				countBuffer++;
+			}
+		}
+	}
 }
