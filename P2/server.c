@@ -389,7 +389,7 @@ int main ( )
                                                         
                                                             //Se comprueba si hay empate
 
-                                                            if(comprobarEmpate(partidas[p].A) == -1){
+                                                            if(comprobarEmpate(partidas[p].A) == 0){
 
                                                                 //Se informa del empate
                                                                 enviar_mensaje(partidas[p].sd1, "+Ok. Se ha producido un empate en la partida");
@@ -405,8 +405,6 @@ int main ( )
                                                                 char msg[MSG_SIZE];
                                                                 generar_msg(msg, partidas[p].A);
                                                                 
-
-
                                                                 // Se cambia el turno 
                                                                 if(partidas[p].turno == partidas[p].sd1){
                                                                     partidas[p].turno = partidas[p].sd2;
