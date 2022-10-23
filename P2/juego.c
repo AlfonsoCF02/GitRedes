@@ -279,7 +279,9 @@ int comprobarVictoria(int turno, char A[6][7], int sd1, int sd2, int pos2){
 
 
 
-/*//Main de prueba
+/*
+
+   //Main de pruebas
 
 int main(void)
 {
