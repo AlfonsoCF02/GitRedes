@@ -26,10 +26,9 @@ void imprimeMatrizActual(char A[6][7]){
 
 
 int colocarFicha(int turno, char A[6][7], int sd1, int sd2, int j){
-   
+
    //0=todo correcto
    //-1=columna llena
-   //-2=el turno no coincide con el id del socket
    
    //1 O;2 X
 int countHuecos=5;
@@ -54,9 +53,7 @@ int countHuecos=5;
          return -1;
       }
    }
-   else{
-      return -2;
-   }
+
    return 0;
 }
 
