@@ -402,7 +402,9 @@ int main ( )
                                                             else{ //Si no hay empate
 
                                                                 //Se envia el nuevo tablero
-
+                                                                char msg[MSG_SIZE];
+                                                                generar_msg(msg, partidas[p].A);
+                                                                
 
 
                                                                 // Se cambia el turno 
