@@ -10,8 +10,8 @@
 #include <time.h>
 #include <arpa/inet.h>
 
-#include "juego.h"
 #include "server.h"
+#include "juego.h"
 
 /*
  * El servidor ofrece el servicio de un juego 4 en raya.
@@ -158,6 +158,8 @@ int main ( )
 
                                     usuarios[numClientes].sd = new_sd; //Se introduce en la lista de usuarios
                                     numClientes++;
+
+                                    inicialzar_usuario(usuarios, numClientes);
 
                                     FD_SET(new_sd,&readfds); //Se introduce en el descriptor en el set
                                 
@@ -427,10 +429,9 @@ int main ( )
                                                         sacar_le(vectorEspera, vectorEspera[0], &numEspera);
                                                         sacar_le(vectorEspera, vectorEspera[1], &numEspera);
 
-                                                        //HACER Inicializamos la matriz de la partida con -
-
-
-
+                                                        //Inicializamos la matriz de la partida con -
+                                                        rellenaMatrizInicial(partidas[enjuego - 1].A);
+                                                        imprimeMatrizActual(partidas[enjuego - 1].A);
 
                                                         //Se envia a los dos +Ok empieza y el tablero en blanco
                                                         enviar_mensaje(partidas[enjuego - 1].sd1 ,"+Ok. Empieza la partida. -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-;-,-,-,-,-,-,-;");
