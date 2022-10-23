@@ -368,7 +368,7 @@ int main ( )
 
                                                         int vflag = comprobarVictoria(i, partidas[p].A, partidas[p].sd1, partidas[p].sd1, pos_rec);
                                                         
-                                                        if( vflag == 1 ||  vflag == 1 ){ //Si el jugador ha ganado
+                                                        if( vflag == 1 ||  vflag == 2 ){ //Si el jugador ha ganado
                                                             
                                                             //Se envia un mensaje informando de la victoria
                                                             char msg_vict[MSG_SIZE];
