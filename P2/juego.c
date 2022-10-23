@@ -31,6 +31,11 @@ int colocarFicha(int turno, char A[6][7], int sd1, int sd2, int j){
    //-1=columna llena
    
    //1 O;2 X
+
+if(j<1 || j>7){
+   return -1;
+}
+
 int countHuecos=5;
    for(int i=0; i<6; i++){
       if(A[i][j-1]!='-'){

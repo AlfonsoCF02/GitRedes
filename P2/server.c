@@ -364,6 +364,15 @@ int main ( )
 
                                                     if(colocarFicha(i, partidas[p].A, partidas[p].sd1, partidas[p].sd2, pos_rec) == 0){
                                                         
+                                                        
+                                                        //Si se ha podido colocar se envia el nuevo tablero
+                                                        char msg[MSG_SIZE];
+                                                        bzero(msg, sizeof(msg));
+                                                        generar_msg(msg, partidas[p].A);
+
+                                                        enviar_mensaje(partidas[p].sd1, msg);
+                                                        enviar_mensaje(partidas[p].sd2, msg);
+
                                                         //Se comprueba si hay victoria
 
                                                         int vflag = comprobarVictoria(i, partidas[p].A, partidas[p].sd1, partidas[p].sd2, pos_rec);
@@ -400,16 +409,6 @@ int main ( )
 
                                                             }
                                                             else{ //Si no hay empate
-
-                                                                //Se envia el nuevo tablero
-                                                                char msg[MSG_SIZE];
-                                                                bzero(msg, sizeof(msg));
-                                                                generar_msg(msg, partidas[p].A);
-
-                                                                printf("Mensaje a enviar:\n%s\n", msg);
-                                                                
-                                                                enviar_mensaje(partidas[p].sd1, msg);
-                                                                enviar_mensaje(partidas[p].sd2, msg);
                                                                 
                                                                 // Se cambia el turno 
                                                                 if(partidas[p].turno == partidas[p].sd1){
