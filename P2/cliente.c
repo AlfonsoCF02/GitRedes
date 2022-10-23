@@ -99,13 +99,6 @@ int main ( )
 			}
 			else if (strstr(buffer, "+Ok. Nuevo tablero. ") != NULL) {
 				//Si se procesa e imprime la nueva matriz
-				
-				//Se procesa por espacios (quitmaos +Ok. Empieza la partida.)
-				for(int i = 0; i<4; i++){
-					sprintf(buffer, strtok(buffer, " "));
-				}
-
-				printf("Buffer = <%s>", buffer);
 
 
 			}
