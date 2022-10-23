@@ -98,14 +98,15 @@ int main ( )
 			//Se comprueba si se ha recibido +Ok. Empieza la partida
 			else if (strstr(buffer, "+Ok. Empieza la partida. ") != NULL) {
 				//Si comienza la partida se imprime la matriz llena de -
+				printf("\n%s\n",buffer);
 				imprimeMatrizVacia();
 			}
 			else if (strstr(buffer, "+Ok. Nuevo tablero. ") != NULL) {
 				//Si se procesa e imprime la nueva matriz
+				printf("\n%s\n",buffer);
 				char A[6][7];
 				pasarMensajeAMatriz(buffer, A);
 				imprimeMatrizActual(A);
-
 			}
 			else{
 				//Si no es ninguna de esas opciones, se muestra el mensaje del server
@@ -170,10 +171,10 @@ void imprimeMatrizActual(char A[6][7]){
 }
 
 void pasarMensajeAMatriz(char buffer[250], char A[6][7]){
-	int countBuffer=21;
+	int countBuffer=20;
 	for(int i=0; i<6; i++){
 		for(int j=0; j<7; j++){
-			buffer[countBuffer]=A[i][j];
+			A[i][j] = buffer[countBuffer];
 			countBuffer++;
 			if(j<6){
 				countBuffer++;
