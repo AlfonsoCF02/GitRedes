@@ -49,7 +49,7 @@ int registro(char user[], char pass[]);
 int existe_username(char user[]);
 
     //Manejo estructura usuarios
-void inicialzar_estructuras(user usuarios[], partida partidas[], int vectorEspera[]);
+void inicialzar_estructuras(partida partidas[], int vectorEspera[]);
 void inicialzar_usuario(user usuarios[], int numClientes);
 int find_pv(user usuarios[MAX_CLIENTS], int sd_buscado);
 
