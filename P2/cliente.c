@@ -83,14 +83,36 @@ int main ( )
             
             bzero(buffer,sizeof(buffer));
             recv(sd,buffer,sizeof(buffer),0); //sizeof xk siempre mandadmos el tamaño max
-            
-            printf("\n%s\n",buffer);
-            
-            if(strcmp(buffer,"Demasiados clientes conectados\n") == 0)
+
+            if(strcmp(buffer,"Demasiados clientes conectados\n") == 0){
+				printf("\n%s\n",buffer);
                 fin =1;
-            
-            if(strcmp(buffer,"Desconexión servidor\n") == 0)
+			}
+            else if(strcmp(buffer,"Desconexión servidor\n") == 0){
+				printf("\n%s\n",buffer);
                 fin =1;
+			}
+			//Se comprueba si se ha recibido +Ok. Empieza la partida
+			else if (strstr(buffer, "+Ok. Empieza la partida. ") != NULL) {
+				//Si comienza la partida se imprime la matriz llena de -
+				imprimeMatrizVacia();
+			}
+			else if (strstr(buffer, "+Ok. Nuevo tablero. ") != NULL) {
+				//Si se procesa e imprime la nueva matriz
+				
+				//Se procesa por espacios (quitmaos +Ok. Empieza la partida.)
+				for(int i = 0; i<4; i++){
+					sprintf(buffer, strtok(buffer, " "));
+				}
+
+				printf("Buffer = <%s>", buffer);
+
+
+			}
+			else{
+				//Si no es ninguna de esas opciones, se muestra el mensaje del server
+				printf("\n%s\n",buffer);
+			}
             
         }
         else
@@ -124,23 +146,14 @@ int main ( )
 		
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void imprimeMatrizVacia(char A[6][7]){
+   printf("|1|2|3|4|5|6|7|\n");
+   for(int i=0; i<6; i++){
+      for(int j=0; j<7; j++){
+         printf("|-");
+      }
+      printf("|");
+      printf("\n");
+   }
+   printf("\n");
+}
