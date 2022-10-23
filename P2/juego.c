@@ -1,15 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define MAX_LINE 6
+#define MAX_COLUMN 7
 
-#include "juego.h"
-
-/*
+#define MIN(i, j) (((i) < (j)) ? (i) : (j))
+#define MAX(i, j) (((i) > (j)) ? (i) : (j))
 
 int ganar=0, empate=0;
 int max1=5, max2=5, max3=5, max4=5, max5=5, max6=5, max7=5;
 int num1=0, num2=0, num3=0, num4=0, num5=0, num6=0, num7=0;
-
-*/
 
 void rellenaMatrizInicial(char A[6][7]){
    for(int i=0; i<6; i++){
@@ -186,8 +185,6 @@ int comprobarVictoria(int turno, char A[6][7], int sd1, int sd2, int pos2){
 //-1=No hay victoria de sd1
 //-2=No hay victoria de sd2
 //-3=el turno no coincide con el id del socket
-
-   int ganar = 0;
 
 //CALCULAR POSICIÓN X (a partir de posición Y)
    int countHuecos=5;
@@ -377,6 +374,293 @@ int comprobarVictoria(int turno, char A[6][7], int sd1, int sd2, int pos2){
 }
 
 
+int main(void)
+{
+   char A[6][7];
+   rellenaMatrizInicial(A);
 
+/*-------COMPROBACION colocarFicha()-----------------
+   int resultado=0;
+   while((colocarFicha(1, A, 1, 2, 1)!=-1)&&(colocarFicha(2, A, 1, 2, 1))!=-1){
+      imprimeMatrizActual(A);
+   }
+*/
 
+/*-------COMPROBACION comprobarEmpate()----------
+   rellenaMatriz(A);
+   imprimeMatrizActual(A);
+   if(comprobarEmpate(A)==0){
+      printf("Hay empate\n");
+   }
+   else{
+      printf("No hay empate\n");
+   }
+*/
 
+/*------COMPROBACION HORIZONTAL sd1 comprobarVictoria()----------
+   colocarFicha(1,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,1);
+   colocarFicha(2,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,1);
+   colocarFicha(1,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,2);
+   colocarFicha(2,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,2);
+   colocarFicha(1,A,1,2,3);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,3);
+   colocarFicha(2,A,1,2,3);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,3);
+   colocarFicha(1,A,1,2,4);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,4);
+*/
+
+/*------COMPROBACION VERTICAL sd1 comprobarVictoria()----------
+   colocarFicha(1,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,1);
+   colocarFicha(2,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,2);
+   colocarFicha(1,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,1);
+   colocarFicha(2,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,2);
+   colocarFicha(1,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,1);
+   colocarFicha(2,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,2);
+   colocarFicha(1,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,1);
+   colocarFicha(2,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,2);
+
+*/
+
+/*------COMPROBACION DIAGONAL(IZQDA-DCHA) sd1 comprobarVictoria()----------
+   colocarFicha(1,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,1);
+   colocarFicha(2,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,2);
+   colocarFicha(1,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,1);
+   colocarFicha(2,A,1,2,3);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,3);
+   colocarFicha(1,A,1,2,3);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,3);
+   colocarFicha(2,A,1,2,7);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,7);
+   colocarFicha(1,A,1,2,4);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,4);
+   colocarFicha(2,A,1,2,4);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,4);
+   colocarFicha(1,A,1,2,4);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,4);
+   colocarFicha(2,A,1,2,7);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,7);
+   colocarFicha(1,A,1,2,3);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,3);
+   colocarFicha(2,A,1,2,7);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,7);
+   colocarFicha(1,A,1,2,4);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,4);
+*/
+
+/*------COMPROBACION DIAGONAL(DCHA-IZQDA) sd1 comprobarVictoria()----------
+   colocarFicha(1,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,1);
+   colocarFicha(2,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,1);
+   colocarFicha(1,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,1);
+   colocarFicha(2,A,1,2,7);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,7);
+   colocarFicha(1,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,1);
+   colocarFicha(1,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,2);
+   colocarFicha(2,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,2);
+   colocarFicha(1,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,2);
+   colocarFicha(2,A,1,2,3);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,3);
+   colocarFicha(1,A,1,2,3);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,3);
+   colocarFicha(2,A,1,2,7);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,7);
+   colocarFicha(1,A,1,2,4);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,4);
+*/
+
+/*------COMPROBACION HORIZONTAL sd2 comprobarVictoria()----------
+   colocarFicha(2,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,1);
+   colocarFicha(1,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,1);
+   colocarFicha(2,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,2);
+   colocarFicha(1,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,2);
+   colocarFicha(2,A,1,2,3);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,3);
+   colocarFicha(1,A,1,2,3);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,3);
+   colocarFicha(2,A,1,2,4);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,4);
+*/
+
+/*------COMPROBACION VERTICAL sd2 comprobarVictoria()----------
+   colocarFicha(2,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,1);
+   colocarFicha(1,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,2);
+   colocarFicha(2,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,1);
+   colocarFicha(1,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,2);
+   colocarFicha(2,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,1);
+   colocarFicha(1,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,2);
+   colocarFicha(2,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,1);
+*/
+
+/*------COMPROBACION DIAGONAL(IZQDA-DCHA) sd2 comprobarVictoria()----------
+   colocarFicha(2,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,1);
+   colocarFicha(1,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,2);
+   colocarFicha(2,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,2);
+   colocarFicha(1,A,1,2,7);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,7);
+   colocarFicha(2,A,1,2,3);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,3);
+   colocarFicha(1,A,1,2,3);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,3);
+   colocarFicha(2,A,1,2,3);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,3);
+   colocarFicha(1,A,1,2,4);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,4);
+   colocarFicha(2,A,1,2,4);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,4);
+   colocarFicha(1,A,1,2,4);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,4);
+   colocarFicha(2,A,1,2,4);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,4);
+
+*/
+
+/*------COMPROBACION DIAGONAL(DCHA-IZQDA) sd2 comprobarVictoria()----------
+   colocarFicha(2,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,1);
+   colocarFicha(1,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,1);
+   colocarFicha(2,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,1);
+   colocarFicha(1,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,1);
+   colocarFicha(2,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,2);
+   colocarFicha(1,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,2);
+   colocarFicha(2,A,1,2,7);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,7);
+   colocarFicha(1,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,2);
+   colocarFicha(2,A,1,2,3);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,3);
+   colocarFicha(1,A,1,2,3);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,3);
+   colocarFicha(2,A,1,2,7);
+   imprimeMatrizActual(A);
+   comprobarVictoria(2,A,1,2,7);
+   colocarFicha(1,A,1,2,1);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,1);
+   colocarFicha(1,A,1,2,2);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,2);
+   colocarFicha(1,A,1,2,3);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,3);
+   colocarFicha(1,A,1,2,4);
+   imprimeMatrizActual(A);
+   comprobarVictoria(1,A,1,2,4);
+*/
+
+}
