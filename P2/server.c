@@ -53,7 +53,7 @@ int main ( )
 
     //Inicializamos las estructuas (vectores) utilizadas para evitar
     //Valores basura que puedan interferir en comprobaciones criticas
-    //La estructura de usuario se gestiona de forma individual
+    //La estructura de usuarios se gestiona de forma individual
 
     inicialzar_estructuras(partidas, vectorEspera);
 
@@ -360,25 +360,67 @@ int main ( )
                                                     cuando la función retorna, la cadena al completo es válida.
                                                     */
 
-                                                    //Cuidado controlar que si no se puede colocar
-                                                    //en la posicion seleccionada retornar error 
-                                                    //del else  
-                                                    enviar_mensaje(i, "+OK. Ficha colocada");
-                                                    //Comprobamos empate
-                                                    
-                                                    //Comprobamos victoria
-                                                    // OJO!! //Si ninguno gana cambiamos turno
-                                                    if(partidas[p].turno == partidas[p].sd1){
-                                                        partidas[p].turno = partidas[p].sd2;
+                                                    //Se coloca la ficha con las comprobaciones pertinentes
+
+                                                    if(colocarFicha(i, partidas[p].A, partidas[p].sd1, partidas[p].sd1, pos_rec) == 0){
+                                                        
+                                                        //Se comprueba si hay victoria
+
+                                                        int vflag = comprobarVictoria(i, partidas[p].A, partidas[p].sd1, partidas[p].sd1, pos_rec);
+                                                        
+                                                        if( vflag == 1 ||  vflag == 1 ){ //Si el jugador ha ganado
+                                                            
+                                                            //Se envia un mensaje informando de la victoria
+                                                            char msg_vict[MSG_SIZE];
+                                                            bzero(msg_vict, sizeof(msg_vict));
+                                                            sprintf(msg_vict, "+Ok. Jugador <%s> ha ganado la partida", usuarios[pv].user);
+
+                                                            enviar_mensaje(partidas[p].sd1, msg_vict);
+                                                            enviar_mensaje(partidas[p].sd2, msg_vict);
+
+                                                            //Se termina la partida
+                                                            /*
+                                                                Nota: borrar_partida() se encarga de dejar todo consistente
+                                                            */
+                                                            borrar_partida(partidas, i, &enjuego, usuarios, 0);
+
+                                                        }
+                                                        else{ //Si no hay victoria
+                                                        
+                                                            //Se comprueba si hay empate
+
+                                                            if(comprobarEmpate(partidas[p].A) == -1){
+
+                                                                //Se informa del empate
+                                                                enviar_mensaje(partidas[p].sd1, "+Ok. Se ha producido un empate en la partida");
+                                                                enviar_mensaje(partidas[p].sd2, "+Ok. Se ha producido un empate en la partida");
+
+                                                                //Se termina la partida
+                                                                borrar_partida(partidas, i, &enjuego, usuarios, 0);
+
+                                                            }
+                                                            else{ //Si no hay empate
+
+                                                                //Se envia el nuevo tablero
+
+
+
+                                                                // Se cambia el turno 
+                                                                if(partidas[p].turno == partidas[p].sd1){
+                                                                    partidas[p].turno = partidas[p].sd2;
+                                                                }
+                                                                else{
+                                                                    partidas[p].turno = partidas[p].sd1;
+                                                                }
+                                                                
+                                                                enviar_mensaje(partidas[p].turno, "+Ok. Turno de partida");
+
+                                                            }
+                                                        }
                                                     }
                                                     else{
-                                                        partidas[p].turno = partidas[p].sd1;
+                                                        enviar_mensaje(i, "-Err. Debe seleccionar otra columna que tenga alguna casilla disponible");
                                                     }
-                                                    
-                                                    enviar_mensaje(partidas[p].turno, "+Ok. Turno de partida");
-
-                                                    //Enviar matrices actualizadas
-
                                                 }
                                                 else{
                                                     enviar_mensaje(i, "-Err. la posicion debe ser un numero");
@@ -434,8 +476,7 @@ int main ( )
                                                         sacar_le(vectorEspera, vectorEspera[1], &numEspera);
 
                                                         //Inicializamos la matriz de la partida con -
-                                                        //rellenaMatrizInicial(partidas[enjuego - 1].A);
-                                                        //imprimeMatrizActual(partidas[enjuego - 1].A);
+                                                        rellenaMatrizInicial(partidas[enjuego - 1].A);
 
                                                         //Se envia a los dos +Ok empieza y el tablero en blanco
                                                         enviar_mensaje(partidas[enjuego - 1].sd1 ,"+Ok. Empieza la partida. -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-;-,-,-,-,-,-,-;");

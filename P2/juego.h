@@ -9,8 +9,7 @@
 
 void rellenaMatrizInicial(char A[6][7]);
 void rellenaMatriz(char A[6][7]);
-void comprobarVictoriaX(int pos1, int pos2, char A[6][7]);
-void comprobarVictoriaO(int pos1, int pos2, char A[6][7]);
+int comprobarVictoria(int turno, char A[6][7], int sd1, int sd2, int pos2);
 void imprimeMatrizActual(char A[6][7]);
 int colocarFicha(int turno, char A[6][7], int sd1, int sd2, int j);
 int comprobarEmpate(char A[6][7]);
