@@ -10,9 +10,8 @@
 #include <time.h>
 #include <arpa/inet.h>
 
-#include "listas.h"
-#include "juego.h"
 #include "server.h"
+#include "juego.h"
 
 /*
  * El servidor ofrece el servicio de un juego 4 en raya
@@ -20,32 +19,41 @@
 
 int main ( )
 {
-  
+
+    //Se captura la señal SIGINT (Ctrl+c) en el server y se le asocia un manejador
+    signal(SIGINT,manejador);
+
+
 	/*---------------------------------------------------- 
 		Descriptor del socket y buffer de datos                
 	-----------------------------------------------------*/
-	int sd, new_sd;//socket descriptor
+	int sd, new_sd;
 	struct sockaddr_in sockname, from;
 	char buffer[MSG_SIZE];
 	socklen_t from_len;
     fd_set readfds, auxfds;
    	int salida;
-   	//int arrayClientes[MAX_CLIENTS];
+
+   	//Vectores de usuarios y partidas
+    user usuarios[MAX_CLIENTS];
+    partida partidas[MAX_P_SIMULT];
+
+    //Vector para implementar una lista de espera FIFO
+    int vectorEspera[MAX_CLIENTS];
+
+    //Contadores empleados en el programa
+    int i,j,k;
+	int recibidos;
+
     int numClientes = 0;
     int numEspera = 0;
     int enjuego = 0;
-   	//contadores
-    int i,j,k;
-	int recibidos;
-   	char identificador[MSG_SIZE];
-    int on, ret;
 
     int pv;
 
-    //Vectores de usuarios y partidas
-    user usuarios[MAX_CLIENTS];
-    partida partidas[MAX_P_SIMULT];
-    int vectorEspera[MAX_CLIENTS];
+
+    //Inicializamos las estructuas (vectores) utilizadas para evitar
+    //Valores basura que puedan interferir en comprobaciones criticas
 
     inicialzar_estructuras(usuarios, partidas, vectorEspera);
 
@@ -59,49 +67,46 @@ int main ( )
     		exit (1);	
 	}
     
-    	// Activaremos una propiedad del socket para permitir· que otros
-    	// sockets puedan reutilizar cualquier puerto al que nos enlacemos.
-    	// Esto permite· en protocolos como el TCP, poder ejecutar un
-    	// mismo programa varias veces seguidas y enlazarlo siempre al
-        // mismo puerto. De lo contrario habrÌa que esperar a que el puerto
-    	// quedase disponible (TIME_WAIT en el caso de TCP).
+    // Activaremos una propiedad del socket para permitir que otros
+    // sockets puedan reutilizar cualquier puerto al que nos enlacemos.
+    // Esto permite en protocolos como el TCP, poder ejecutar un
+    // mismo programa varias veces seguidas y enlazarlo siempre al
+    // mismo puerto. De lo contrario habrÌa que esperar a que el puerto
+    // quedase disponible (TIME_WAIT en el caso de TCP).
 
-    	on = 1;
-    	ret = setsockopt( sd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
-
+    int on = 1;
+    int ret = setsockopt( sd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
 
 	sockname.sin_family = AF_INET;
 	sockname.sin_port = htons(2060);
 	sockname.sin_addr.s_addr =  INADDR_ANY;
 
-    // Ver si se asocia puerto e ip
-	if (bind (sd, (struct sockaddr *) &sockname, sizeof (sockname)) == -1)
-	{
+    // Comprobar si se asocia puerto e ip
+	if (bind (sd, (struct sockaddr *) &sockname, sizeof (sockname)) == -1){
+
 		perror("Error en la operación bind");
 		exit(1);
+
 	}
-	
 
    	/*---------------------------------------------------------------------
 		Del las peticiones que vamos a aceptar sólo necesitamos el 
 		tamaño de su estructura, el resto de información (familia, puerto, 
 		ip), nos la proporcionará el método que recibe las peticiones.
    	----------------------------------------------------------------------*/
-	from_len = sizeof (from);
-
+	
+    from_len = sizeof (from);
 
 	if(listen(sd,1) == -1){
 		perror("Error en la operación de listen");
 		exit(1);
 	}
+
 	//Inicializar los conjuntos fd_set
     	FD_ZERO(&readfds);
     	FD_ZERO(&auxfds);
     	FD_SET(sd,&readfds);
     	FD_SET(0,&readfds);
-   	
-    //Capturamos la señal SIGINT (Ctrl+c)
-    	signal(SIGINT,manejador);
     
 	/*-----------------------------------------------------------------------
 		El servidor acepta una petición
@@ -111,6 +116,9 @@ int main ( )
             //Comprobamos que no se haya pulsado ctrl+c en el server
             if(manejador_flag == 1){
                              
+                //Si se ha pulsado se desconecta a los usuarios conectados
+                //Se cierra el socket y apaga el servidor
+
                 for (j = 0; j < numClientes; j++){
                     enviar_mensaje(usuarios[j].sd, "Desconexión servidor\n");
                     close(usuarios[j].sd);
@@ -128,30 +136,28 @@ int main ( )
             //Esperamos recibir mensajes de los clientes 
             // (nuevas conexiones o mensajes de los clientes ya conectados)
             
-            auxfds = readfds;  // xk el select se lo carga
+            auxfds = readfds;  // Para evitar perderlo por el select
             
             salida = select(FD_SETSIZE,&auxfds,NULL,NULL,NULL);
             
-            if(salida > 0){
-                
-                
-                for(i=0; i<FD_SETSIZE; i++){ 
-                // Mas eficiente meter variable para ver que no sea mayor que el maximo que 
-                // tengo mas 1 (no comprobar que es mayor que el maximo --> ver si vale nota hacerlo xd)
-                    
-                    //Buscamos el socket por el que se ha establecido la comunicación
-                    if(FD_ISSET(i, &auxfds)) {
+            if(salida > 0){ //Tenemos una peticion
+                 
+                for(i=0; i<FD_SETSIZE; i++){ //Se recorre el set
+
+                    if(FD_ISSET(i, &auxfds)){ //Mira si el descriptor de socket dado por fd se encuentra en el conjunto especificado por set
                         
-                        if( i == sd ){
+                        if( i == sd ){ //Si el socket que ha establecido la comunicacion es examinado
                             
+                            //Se recibe la conexion del cliente
                             if((new_sd = accept(sd, (struct sockaddr *)&from, &from_len)) == -1){
                                 perror("Error aceptando peticiones");
                             }
-                            else
-                            {
+                            else{
+                            
+                                //Se comprueba que se puedan aceptar mas clientes
                                 if(numClientes < MAX_CLIENTS){
 
-                                    usuarios[numClientes].sd = new_sd; //A quien hay que mandar
+                                    usuarios[numClientes].sd = new_sd; //Se introduce en la lista de usuarios
 
                                     //No se puede en la estructura, quitamos valores basura
                                     //Por si acaso alguno es 0
