@@ -39,7 +39,6 @@ void enviar_mensaje(int socket_destino, char mensaje[MSG_SIZE]);
 
         //Manejo de partidas
 void borrar_partida(partida partidas[], int socket, int* enjuego,user usuarios[], int avisar);
-void enviar_nuevo_tablero(int sd_enviar, char A[6][7]);
 int find_pv_partida(partida partidas[], int sd_buscado);
 void generar_msg(char msg[MSG_SIZE], char A[6][7]);
 

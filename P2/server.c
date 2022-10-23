@@ -240,7 +240,7 @@ int main(){
                                     /*
                                         salirCliente() se encarga de realizar todo lo pertinente para terminar
                                         la conexion de un cliente y reflejar los cambios en todas las estructuras
-                                        necesarias para garantizar la consistencia del serdivor y el juego.
+                                        necesarias para garantizar la consistencia del servidor y el juego.
                                     */
                                     
                                     salirCliente(i,&readfds,&numClientes,usuarios,vectorEspera, &numEspera, partidas, &enjuego);
@@ -790,7 +790,7 @@ void sacar_le(int vectorEspera[], int borrar, int* numEspera){
     int j;
     
     //Encontramos el indice del usuario
-    for (j = 0; j < *(numEspera) - 1; j++)
+    for (j = 0; j < *(numEspera); j++)
         if (vectorEspera[j] == borrar)
             break;
     
@@ -805,13 +805,6 @@ void sacar_le(int vectorEspera[], int borrar, int* numEspera){
 
 }
 
-void enviar_nuevo_tablero(int sd_enviar, char A[6][7]){
-
-    //IMPLEMENTAR EL PASAR LA MATRIZ
-
-
-}
-
 void borrar_partida(partida partidas[], int socket, int* enjuego, user usuarios[], int avisar){
 
     //Elimina una partida y deja todo consistente
@@ -819,7 +812,7 @@ void borrar_partida(partida partidas[], int socket, int* enjuego, user usuarios[
     int j;
     
     //Encontrar la partida a terminar
-    for (j = 0; j < *(enjuego) - 1; j++)
+    for (j = 0; j < *(enjuego) ; j++)
         if ((partidas[j].sd1 == socket) || (partidas[j].sd2== socket))
             break;
 
@@ -859,7 +852,7 @@ int find_pv_partida(partida partidas[], int sd_buscado){
 
     int j;
 
-    for (j = 0; j < MAX_P_SIMULT - 1; j++){
+    for (j = 0; j < MAX_P_SIMULT ; j++){
         if ((partidas[j].sd1 == sd_buscado) || (partidas[j].sd2 == sd_buscado)){
             return j;
         }
