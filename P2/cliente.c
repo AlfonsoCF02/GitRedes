@@ -9,6 +9,7 @@
 #include <time.h>
 #include <arpa/inet.h>
 
+void imprimeMatrizVacia();
 
 int main ( )
 {
@@ -139,7 +140,7 @@ int main ( )
 		
 }
 
-void imprimeMatrizVacia(char A[6][7]){
+void imprimeMatrizVacia(){
    printf("|1|2|3|4|5|6|7|\n");
    for(int i=0; i<6; i++){
       for(int j=0; j<7; j++){
