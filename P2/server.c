@@ -405,6 +405,9 @@ int main ( )
                                                                 char msg[MSG_SIZE];
                                                                 generar_msg(msg, partidas[p].A);
                                                                 
+                                                                enviar_mensaje(partidas[p].sd1, msg);
+                                                                enviar_mensaje(partidas[p].sd2, msg);
+                                                                
                                                                 // Se cambia el turno 
                                                                 if(partidas[p].turno == partidas[p].sd1){
                                                                     partidas[p].turno = partidas[p].sd2;
@@ -866,9 +869,9 @@ int find_pv_partida(partida partidas[], int sd_buscado){
 }
 
 void generar_msg(char msg[MSG_SIZE], char A[6][7]){
-    char msg_inicial[20]="+Ok. Nuevo tablero. ";
+    char msg_inicial[]="+Ok. Nuevo tablero. ";
     strcat(msg, msg_inicial);
-    int count_msg=21;
+    int count_msg = strlen(msg_inicial);
     for(int i=0; i<6; i++){
         for(int j=0; j<7; j++){
             msg[count_msg]=A[i][j];
