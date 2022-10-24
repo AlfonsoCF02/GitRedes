@@ -303,19 +303,22 @@ int main(){
 
                                     //Comprobamos el formato
 
+                                    char user_tmp[MSG_SIZE];
+                                    char pass_tmp[MSG_SIZE];
+
                                     char aux[MSG_SIZE];
                                     sprintf(aux, strtok(NULL, " "));
                                     if( strcmp(aux,"-u") == 0 ){
                                         //Almacenamos el user
-                                        sprintf(usuarios[pv].user, strtok(NULL, " "));
+                                        sprintf(user_tmp, strtok(NULL, " "));
                                         sprintf(aux, strtok(NULL, " "));
                                         if(strcmp(aux,"-p") == 0){
                                             //Almacenamos la pass
-                                            sprintf(usuarios[pv].pass, strtok(NULL, " "));
+                                            sprintf(pass_tmp, strtok(NULL, " "));
 
                                             //Tratamos de registrar al usuario con los datos introducidos
                                             //registro() comprueba que no exista ya en la BD
-                                            if(registro(usuarios[pv].user, usuarios[pv].pass) == 0){
+                                            if(registro(user_tmp, pass_tmp) == 0){
 
                                                 enviar_mensaje(i, "+Ok. Usuario registrado");
 
@@ -487,8 +490,8 @@ int main(){
                                                         rellenaMatrizInicial(partidas[enjuego - 1].A);
 
                                                         //Se envia a los dos +Ok empieza y el tablero en blanco
-                                                        enviar_mensaje(partidas[enjuego - 1].sd1 ,"+Ok. Empieza la partida. -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-;-,-,-,-,-,-,-;");
-                                                        enviar_mensaje(partidas[enjuego - 1].sd2 ,"+Ok. Empieza la partida. -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-;-,-,-,-,-,-,-;");
+                                                        enviar_mensaje(partidas[enjuego - 1].sd1 ,"+Ok. Empieza la partida. -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-;");
+                                                        enviar_mensaje(partidas[enjuego - 1].sd2 ,"+Ok. Empieza la partida. -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-; -,-,-,-,-,-,-;");
 
                                                         //Se le envia a quien tiene que empezar el turno
                                                         enviar_mensaje(partidas[enjuego - 1].turno, "Ok. Turno de partida");
