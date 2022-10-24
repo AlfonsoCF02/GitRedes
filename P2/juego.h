@@ -13,6 +13,8 @@ int colocarFicha(int turno, char A[6][7], int sd1, int sd2, int j);
 int comprobarVictoria(int turno, char A[6][7], int sd1, int sd2, int pos2);
 int comprobarEmpate(char A[6][7]);
 
-//int main(void); main de prueba para el juego
+//Main de prueba para el juego.
+
+//int main();
 
 #endif

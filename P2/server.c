@@ -14,8 +14,12 @@
 #include "juego.h"
 
 /*
- * El servidor ofrece el servicio de un juego 4 en raya.
- */
+
+    El servidor ofrece el servicio de un juego 4 en raya.
+
+    Compilar: gcc server.c juego.c -o server
+
+*/
 
 int main(){
 
@@ -48,7 +52,6 @@ int main(){
     int enjuego = 0;
 
     int pv;
-
 
     //Inicializamos las estructuas (vectores) utilizadas para evitar
     //Valores basura que puedan interferir en comprobaciones criticas
@@ -143,7 +146,7 @@ int main(){
                 
                 for(i=0; i<FD_SETSIZE; i++){  //Se recorre el set
 
-                    if(FD_ISSET(i, &auxfds)) {  //Mira si el descriptor de socket dado por fd se encuentra en el conjunto especificado por set.
+                    if(FD_ISSET(i, &auxfds)){  //Mira si el descriptor de socket dado por fd se encuentra en el conjunto especificado por set.
                         
                         if( i == sd ){  //Si el socket que ha establecido la comunicacion es examinado
                             
@@ -158,8 +161,9 @@ int main(){
 
                                     usuarios[numClientes].sd = new_sd; //Se introduce en la lista de usuarios
                                     
-                                    //Se inicializan los datos del cliente, por si alguno es 0
-                                    //No se puede en la estructura
+                                    //Se inicializan los datos del cliente, para evitar que algun valor basura
+                                    //afecte a las comprobaciones del servidor. No se puede en la estructura
+
                                     inicialzar_usuario(usuarios, numClientes);
 
                                     numClientes++;
@@ -321,11 +325,11 @@ int main(){
                                             }
                                         }
                                         else{
-                                            enviar_mensaje(i, "-Err. El formato incorrecto (-p)");
+                                            enviar_mensaje(i, "-Err. Formato incorrecto (-p no incluido)");
                                         }
                                     }
                                     else{
-                                        enviar_mensaje(i, "-Err. El formato incorrecto (-u)");
+                                        enviar_mensaje(i, "-Err. Formato incorrecto (-u no incluido)");
                                     }
 
                                 }

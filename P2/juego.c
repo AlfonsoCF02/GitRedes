@@ -3,7 +3,18 @@
 
 #include "juego.h"
 
+/*
+
+   Implementa las funciones necesarias para jugar al 4 en raya.
+
+    Compilar: No es necesario. Simplemente se incluye en el servidor.
+
+*/
+
 void rellenaMatrizInicial(char A[6][7]){
+
+   //Rellena una matriz (tablero) con -
+
    for(int i=0; i<6; i++){
       for(int j=0; j<7; j++){
          A[i][j]='-';
@@ -12,6 +23,9 @@ void rellenaMatrizInicial(char A[6][7]){
 }
 
 void imprimeMatrizActual(char A[6][7]){
+
+   //Imprime una matriz (tablero).
+
    printf("|1|2|3|4|5|6|7|\n");
    for(int i=0; i<6; i++){
       for(int j=0; j<7; j++){
@@ -27,10 +41,13 @@ void imprimeMatrizActual(char A[6][7]){
 
 int colocarFicha(int turno, char A[6][7], int sd1, int sd2, int j){
 
-   //0=todo correcto
-   //-1=columna llena
+   //Coloca una ficha en la posicion indicada
+
+   //Devuelve:
+   // 0 = todo correcto
+   // -1 = columna llena o posición no valida
    
-   //1 O;2 X
+   //El jugador sd1 juega con O y sd2 con X
 
 if(j<1 || j>7){
    return -1;
@@ -63,8 +80,13 @@ int countHuecos=5;
 }
 
 int comprobarEmpate(char A[6][7]){
-   //0=hay empate
-   //-1= no hay empate
+
+   //Comprueba si existe un empate en el tablero recibido
+
+   //Devuelve
+   // 0 = hay empate
+   // -1 = no hay empate
+
    int cuenta=0;
    for(int i=0; i<6; i++){
       for(int j=0; j<7; j++){
@@ -81,12 +103,14 @@ int comprobarEmpate(char A[6][7]){
 
 int comprobarVictoria(int turno, char A[6][7], int sd1, int sd2, int pos2){
 
+   //Comprueba si existe una victoria en el tablero recibido
+
    //Devuelve
-   //1=Victoria sd1
-   //2=Victoria sd2
-   //-1=No hay victoria de sd1
-   //-2=No hay victoria de sd2
-   //-3=el turno no coincide con el id del socket
+   // 1 = Victoria sd1
+   // 2 = Victoria sd2
+   // -1 = No hay victoria de sd1
+   // -2 = No hay victoria de sd2
+   // -3 = el turno no coincide con el id del socket
 
    int ganar = 0;
 
@@ -98,6 +122,7 @@ int comprobarVictoria(int turno, char A[6][7], int sd1, int sd2, int pos2){
       }
    }
    int pos1=countHuecos+1;
+
 //-------------TURNO DE SD1------------------
    if(turno==sd1){
 
@@ -159,7 +184,6 @@ int comprobarVictoria(int turno, char A[6][7], int sd1, int sd2, int pos2){
          }
       }
 
-
       //---------DIAGONAL(DCHA-IZQDA)---------------
 
       int x2=pos1;
@@ -186,6 +210,7 @@ int comprobarVictoria(int turno, char A[6][7], int sd1, int sd2, int pos2){
       }
       return -1;
    }
+
 //-------------TURNO DE SD2------------------
    if(turno==sd2){
 
@@ -247,7 +272,6 @@ int comprobarVictoria(int turno, char A[6][7], int sd1, int sd2, int pos2){
          }
       }
 
-
       //---------DIAGONAL(DCHA-IZQDA)---------------
 
       int x2=pos1;
@@ -277,14 +301,17 @@ int comprobarVictoria(int turno, char A[6][7], int sd1, int sd2, int pos2){
    return -3;
 }
 
+   //A continuacion se encuentra comentado un MAIN que se puede usar para probar
+   // que el juego funciona correctamente
 
+   //Usado para pruebas antes de implementarlo en el servidor.
 
 /*
 
    //Main de pruebas
 
-int main(void)
-{
+int main(){
+
    char A[6][7];
    rellenaMatrizInicial(A);
 

@@ -9,9 +9,19 @@
 #include <time.h>
 #include <arpa/inet.h>
 
+	//Funciones utilizadas 
+
 void imprimeMatrizVacia();
 void imprimeMatrizActual(char A[6][7]);
 void pasarMensajeAMatriz(char buffer[250], char A[6][7]);
+
+/*
+
+    Cliente para jugar al 4 en raya.
+
+    Compilar: gcc cliente.c -o cliente
+
+*/
 
 int main(){
   
@@ -51,8 +61,8 @@ int main(){
 
 	len_sockname = sizeof(sockname);
 	
-	if (connect(sd, (struct sockaddr *)&sockname, len_sockname) == -1)
-	{
+	if (connect(sd, (struct sockaddr *)&sockname, len_sockname) == -1){
+	
 		perror ("Error de conexión");
 		exit(1);
 	}
@@ -96,11 +106,11 @@ int main(){
                 fin =1;
 			}
 			//Se comprueba si se ha recibido +Ok. Empieza la partida
-			else if (strstr(buffer, "+Ok. Empieza la partida. ") != NULL) {
+			else if (strstr(buffer, "+Ok. Empieza la partida. ") != NULL){
 				//Si comienza la partida se imprime la matriz llena de -
 				imprimeMatrizVacia();
 			}
-			else if (strstr(buffer, "+Ok. Nuevo tablero. ") != NULL) {
+			else if (strstr(buffer, "+Ok. Nuevo tablero. ") != NULL){
 				//Si se procesa e imprime la nueva matriz (tablero)
 				char A[6][7];
 				pasarMensajeAMatriz(buffer, A);

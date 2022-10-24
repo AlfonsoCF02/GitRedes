@@ -9,21 +9,21 @@
     //Estrctura de usuario
 
 typedef struct user{
-    int sd;
-    char user[MSG_SIZE];
-    char pass[MSG_SIZE];
-    int logueado; // 1 -> no
-    int enespera; // 1 -> no
-    int enjuego; // 1-> si
+    int sd; //Socket del usuario
+    char user[MSG_SIZE]; //Username del usuario
+    char pass[MSG_SIZE]; //Passwor del usuario
+    int logueado; // 1 -> no esta logueado
+    int enespera; // 1 -> no esta en espera 
+    int enjuego; // 1-> si esta en juego
 }user;
 
     //Estrctura de partida
 
 typedef struct partida{
-    int sd1;
-    int sd2;
-    char A[6][7];
-    int turno; // socket con turno
+    int sd1; //Socket del jugador 1
+    int sd2; //Socket del jugador 2
+    char A[6][7]; //Tablero de juego
+    int turno; //Valor de sd1 o sd2 al que le corresponde el turno
 }partida;
 
     //Bandera y cabecera para el manejador de señal
