@@ -138,7 +138,7 @@ int comprobarVictoria(int turno, char A[6][7], int sd1, int sd2, int pos2){
 
       int x1=pos1;
       int y1=pos2-1;
-      while((y1>0)&&(x1>0)){
+      while((y1>0)&&(x1>0)){ //Con este while nos posicionamos en la primera casilla de la diagonal a comprobar
          x1--;
          y1--;
       }
@@ -149,7 +149,7 @@ int comprobarVictoria(int turno, char A[6][7], int sd1, int sd2, int pos2){
          if(A[i1][j1]=='O'){
             diagonalCount++;
          }
-         if(A[i1][j1]=='X'||A[i1][j1]=='-'){
+         if(A[i1][j1]=='X'||A[i1][j1]=='-'){ //Con este if comprobamos que todas las fichas estén una detras de otra, sin fichas del otro oponente o vacías de por medio
             diagonalCount=0;
          }
          if(diagonalCount==4){
@@ -175,7 +175,7 @@ int comprobarVictoria(int turno, char A[6][7], int sd1, int sd2, int pos2){
          if(A[i2][j2]=='O'){
             diagonalCount2++;
          }
-         if(A[i2][j2]=='X'||A[i2][j2]=='-'){
+         if(A[i2][j2]=='X'||A[i2][j2]=='-'){//Con este if comprobamos que todas las fichas estén una detras de otra, sin fichas del otro oponente o vacías de por medio
             diagonalCount2=0;
          }
          if(diagonalCount2==4){
