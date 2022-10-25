@@ -576,9 +576,9 @@ void salirCliente(int socket, fd_set * readfds, int * numClientes, user usuarios
     for (; pos_usr < (*numClientes) - 1; pos_usr++){
         (usuarios[pos_usr] = usuarios[pos_usr+1]);
     }
-
+    
     //Al moverlos todos 1 posicion adelante el ultimo hay que borrarlo
-    inicialzar_usuario(usuarios, *numClientes);
+    inicialzar_usuario(usuarios, *numClientes - 1);
 
     (*numClientes)--;
 
@@ -647,8 +647,6 @@ int login(char user[], char pass[]){
     return 1;
 
 }
-
-
 
 
 int registro(char user[], char pass[]){
@@ -778,7 +776,6 @@ void inicialzar_estructuras(partida partidas[], int vectorEspera[]){
         partidas[z].sd1 = -1;
         partidas[z].sd2 = -1;
         partidas[z].turno = -1;
-        //La matriz ya vemos luego en el de borrar tmb
     }
     
     z = 0;
@@ -802,11 +799,12 @@ void sacar_le(int vectorEspera[], int borrar, int* numEspera){
             break;
     
     //Lo borramos y reestructuramos
-    for (; j < *(numEspera) - 1; j++)
+    for (; j < *(numEspera) - 1; j++){
         (vectorEspera[j] = vectorEspera[j+1]);
+    }
 
     //Al moverlos todos 1 posicion adelante el ultimo hay que borrarlo
-    vectorEspera[*(numEspera)] = -1;
+    vectorEspera[*(numEspera)-1] = -1;
 
     (*numEspera)--;
 
@@ -840,14 +838,14 @@ void borrar_partida(partida partidas[], int socket, int* enjuego, user usuarios[
     }
 
     //Reestructurar el vector de partidas
-    for (; j < *(enjuego) - 1; j++)
+    for (; j < *(enjuego) - 1; j++){
         (partidas[j] = partidas[j+1]);
+    }
 
     //Al moverlos todos 1 posicion adelante el ultimo hay que borrarlo
-    partidas[*(enjuego)].sd1 = -1;
-    partidas[*(enjuego)].sd2 = -1;
-    partidas[*(enjuego)].turno = -1;
-    //poner la matriz a 0
+    partidas[*(enjuego)-1].sd1 = -1;
+    partidas[*(enjuego)-1].sd2 = -1;
+    partidas[*(enjuego)-1].turno = -1;
 
     (*enjuego)--;
 
